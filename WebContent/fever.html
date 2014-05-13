@@ -5,7 +5,8 @@
 
 <link rel="stylesheet" href="styles/bootstrap/dist/css/bootstrap.css">
 <link rel="stylesheet" href="styles/main.css">
-
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/d3.slider.css">
 
 
 </head>
@@ -14,6 +15,7 @@
 <script type="text/javascript" src="d3/d3.min.js"></script> 
 <script type="text/javascript" src="node_modules/topojson/topojson.min.js"></script>
 <script type="text/javascript" src="d3Functions.js"></script>
+<script type="text/javascript" src="js/d3slider/d3.slider.js"></script>
 
 <script type="text/javascript">
 var feverTeamName = "West Coast Fever";
@@ -208,7 +210,10 @@ display();
 
 
 </script>
+<div id="slider1" class="worker"></div>
+<script>
+    d3.select('#slider1').call(d3.slider().axis(true).min(2008).max(2013).step(5));
 
-
+</script>
 </body>
 </html>
