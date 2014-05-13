@@ -194,7 +194,9 @@ function showResultsDetails(inputData, record){
 </script>
 <div id="slider1" class="wrapper"></div>
 <script>
-    d3.select('#slider1').call(d3.slider().axis(d3.svg.axis().ticks(5)).min(2008).max(2013));
+    d3.select('#slider1').call(d3.slider().axis(d3.svg.axis().ticks(5)).min(2008).max(2013).value(1).on("slide",function(evt, value){
+console.log(value);
+    }));
 
 </script>
 </body>
