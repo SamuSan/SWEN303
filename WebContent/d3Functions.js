@@ -8,12 +8,12 @@
 
 
 var year = 2013;
-var pieInnerRadius = 50;
-var pieRadius = 150;
+var pieInnerRadius = 30;
+var pieRadius = 200;
 
 
-var width = 2000;
-var height = 800;
+var width = 800;
+var height = 700;
 
 // var color = d3.scale.category10();
 

@@ -25,10 +25,10 @@ var colorScale = d3.scale.ordinal()
 // var colorScaleLin = d3.scale.linear()
 // 					.domain(0,1)
 // 					.range(["#191970","#008080"]);
-	var svg = d3.select("body")
-				.append("svg")
-				.attr("width", width)
-				.attr("height", height);
+var svg = d3.select("body")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height);
 
 function getWinLoss(data){
 var seasonWinLoss = new Array();
@@ -134,24 +134,9 @@ function showResultsDetails(inputData, record){
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-		// console.log(data);
-		// console.log(season);
-
 			});
-};
+}
 
-function display(){
 	d3.json("data/allSeasons.json",function(data){
 	var winLoss = getWinLoss(data);
 		// console.log(winLoss);
@@ -160,10 +145,7 @@ function display(){
 					.innerRadius(pieInnerRadius)
 					.outerRadius(pieRadius);
 
-	// var svg = d3.select("body")
-	// 			.append("svg")
-	// 			.attr("width", width)
-	// 			.attr("height", height);
+
 
  	var pie = d3.layout.pie()
  				.value(function(d){
@@ -178,7 +160,7 @@ function display(){
 					.enter()
 					.append("g")
 					.attr("class","arc")
-					.attr("transform","translate("+(pieRadius+(width/8))+","+(pieRadius+(height/16))+")")
+					.attr("transform","translate("+(width/2)+","+(pieRadius+(height/16))+")")
 					.on("click",function(d){
 						return showResultsDetails(d, d.data);
 					} );
@@ -197,22 +179,22 @@ function display(){
 		.attr("text-anchor", "middle")
 		.text(function(d){
 			// console.log(d.data.label);
-			return d.data.label;
+			return d.data.label +" : "+d.data.count;
 		});
 
 
 
 	});
 		
-};
 
-display();
+
+
 
 
 </script>
-<div id="slider1" class="worker"></div>
+<div id="slider1" class="wrapper"></div>
 <script>
-    d3.select('#slider1').call(d3.slider().axis(true).min(2008).max(2013).step(5));
+    d3.select('#slider1').call(d3.slider().axis(d3.svg.axis().ticks(5)).min(2008).max(2013));
 
 </script>
 </body>
