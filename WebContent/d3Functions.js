@@ -13,7 +13,7 @@ var pieRadius = 200;
 
 
 var width = 800;
-var height = 700;
+var height = 500;
 
 // var color = d3.scale.category10();
 
