@@ -1,0 +1,566 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"se",
+				"season"
+			],
+			[
+				"select",
+				"selectAll"
+			],
+			[
+				"sele",
+				"selectAll"
+			],
+			[
+				"pie",
+				"pieRadius"
+			],
+			[
+				"te",
+				"feverTeamName"
+			],
+			[
+				"win",
+				"winLoss"
+			],
+			[
+				"for",
+				"for	for (…) {…}"
+			],
+			[
+				"font",
+				"font-family"
+			],
+			[
+				"cons",
+				"console"
+			],
+			[
+				"winner",
+				"winnerContainer"
+			],
+			[
+				"rou",
+				"currRoute"
+			],
+			[
+				"volum",
+				"volume"
+			],
+			[
+				"vol",
+				"volumecost"
+			],
+			[
+				"we",
+				"weight"
+			],
+			[
+				"weight",
+				"weightcost"
+			],
+			[
+				"cu",
+				"currRouteType"
+			],
+			[
+				"ex",
+				"expenditure"
+			],
+			[
+				"x",
+				"x"
+			],
+			[
+				"rev",
+				"revenue"
+			],
+			[
+				"to",
+				"totalRevenue"
+			],
+			[
+				"re",
+				"revenue"
+			],
+			[
+				"get",
+				"getRevenue"
+			],
+			[
+				"p",
+				"prices"
+			],
+			[
+				"fun",
+				"function"
+			],
+			[
+				"S",
+				"Standard"
+			],
+			[
+				"h",
+				"h1	Tag"
+			],
+			[
+				"$root",
+				"$rootScope	AngularJS"
+			],
+			[
+				"min",
+				"min-width"
+			],
+			[
+				"l",
+				"label	Tag"
+			],
+			[
+				"ng-v",
+				"ng-view	AngularJS"
+			],
+			[
+				"s",
+				"script	Tag"
+			],
+			[
+				"pad",
+				"padding-right"
+			],
+			[
+				"righ",
+				"border-right"
+			],
+			[
+				"font-",
+				"font-weight"
+			],
+			[
+				"d",
+				"div	Tag"
+			],
+			[
+				"in",
+				"input	Tag"
+			],
+			[
+				"ng",
+				"ng-href	AngularJS"
+			],
+			[
+				"bo",
+				"bower_components"
+			],
+			[
+				"n",
+				"nav	Tag"
+			],
+			[
+				"di",
+				"display"
+			],
+			[
+				"u",
+				"ul	Tag"
+			],
+			[
+				"backgroun",
+				"background-color"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "WebContent/fever.html",
+			"settings":
+			{
+				"buffer_size": 4519,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "WebContent/d3Functions.js",
+			"settings":
+			{
+				"buffer_size": 310,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": ".mainDiv\n{\nbackground-color: #FFFFFF;\nwidth: 100%;\nheight: 100%;\n}\n\n/*Teams  styles*/\n							/*ADELAIDE THUNDERBIRDS*/\n.AdelaideThunderbirdsCircle{\n	fill:#FF1493;/* Pink */\n	stroke:#FFFFF1;/* White */\n\n}\n							/*CENTRAL PULSE*/\n.CentralPulseCircle{\n	fill:#FFFF00;/* Yellow */\n	stroke:#1560BD;/* Blue */\n}\n							/*CANTERBURY TACTIX*/\n.CanterburyTactixCircle{\n	fill:#FF0000;/* Red */\n	stroke:#000000;/* Black */\n}\n							/* MELB VIX*/\n.MelbourneVixensCircle{\n	fill:#191970;/* Dark Blue */\n	stroke:#008080;/* Green */\n}\n							/*NSW SWIFTS*/\n.NewSouthWalesSwiftsCircle{\n	fill:#FF0000;/*Red*/\n	stroke:#6495ED;/*Light Blue*/\n}\n							/*NORTHERN MYSTICS*/\n.NorthernMysticsCircle{\n	fill:#0000FF;/* Royal Blue */\n	stroke:#FF0000;/* Red */\n}\n							/*QUEENSLAND FIREBIRDS*/\n.QueenslandFirebirdsCircle{\n	fill:#800080;/* Purple */\n	stroke:#FFA500;/* Gold */\n}\n							/*SOUTHERN STEEL*/\n.SouthernSteelCircle{\n	fill:#00B7EB;/* Light Blue*/\n	stroke:#000000;/*Black*/\n}\n							/*WAIKATO BAY OF PLENTY MAGIC*/\n.WaikatoBayofPlentyMagicCircle{\n	fill:#000000;/* Black */\n	stroke:#FF4500;/* Orange */\n}\n							/*WESTCOST FEVER*/\n.WestCoastFeverCircle{\n	fill:#000000;/* Black */\n	stroke:#32CD32;/* Bright Ugly Green*/\n}\n\n.AdelaideThunderbirdsCircle,							\n.CentralPulseCircle,							\n.CanterburyTactixCircle,							\n.MelbourneVixensCircle,	\n.NewSouthWalesSwiftsCircle,							\n.NorthernMysticsCircle,							\n.QueenslandFirebirdsCircle,							\n.SouthernSteelCircle,							\n.WaikatoBayofPlentyMagicCircle,							\n.WestCoastFeverCircle{\n	stroke-width:10px;\n	border-color: #000000;\n	font\n\n}\n/*Main Tabel styles*/\n.mainTable{\n		margin: 5px auto auto auto;\n}\n.spacerTD{\n	width: 100%;\n}\n.titleTD{\n	width: 100%;\n}\n.titleIMG{\n	position: relative;\n	left: 220%;\n	top: 0%;\n}\n\ntd{\n	padding:0px 5px 30px 5px;\n}\n.buttonTR{\n	padding:0px;\n}\n.tdSeasons{\n	padding: 10px 5px 5px 5px;\n}\n.slider{\n	position: absolute;\n	left: 600px;\n}\n.slice{\n	font-size: 18px;\n	font-family: Verdana;\n}",
+			"file": "WebContent/styles/main.css",
+			"file_size": 1937,
+			"file_write_time": 1399788851000000,
+			"settings":
+			{
+				"buffer_size": 1943,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "WebContent/2009.html",
+			"settings":
+			{
+				"buffer_size": 2381,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"selected_items":
+		[
+			[
+				"Snippet: ",
+				"Snippet: Bootstrap info button"
+			],
+			[
+				"bo",
+				"Snippet: Bootstrap tabbable navigation tabs on the left"
+			],
+			[
+				"",
+				"Snippet: Bootstrap basic two column grid"
+			],
+			[
+				"B",
+				"Snippet: Bootstrap horizontal form"
+			],
+			[
+				"b",
+				"Snippet: Bootstrap basic pills"
+			],
+			[
+				"Snippet: boo",
+				"Snippet: Bootstrap large button"
+			],
+			[
+				"Package",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 575.0
+	},
+	"console":
+	{
+		"height": 125.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Users/samminns/Documents/workspaceJS/SWEN303_project_vers 2/WebContent/d3Functions.js",
+		"/Users/samminns/Documents/workspaceJS/SWEN303_project_vers 2/WebContent/2009.html",
+		"/Users/samminns/Documents/workspaceJS/SWEN303_project_vers 2/WebContent/steel.html",
+		"/Users/samminns/Documents/workspaceJS/SWEN303_project_vers 2/WebContent/styles/main.css",
+		"/Users/samminns/Documents/workspaceJS/PIEDEOM/pie/index.html",
+		"/Users/samminns/Documents/workspaceJS/SWEN303_project_vers 2/WebContent/data/allSeasons.json",
+		"/Users/samminns/Documents/workspaceJS/SWEN303_project_vers 2/WebContent/data/2013AnzChamp.json",
+		"/Users/samminns/Documents/workspaceJS/SWEN303_project_vers 2/WebContent/index.html",
+		"/Users/samminns/Documents/workspaceJS/SWEN303_project_vers 2/WebContent/fever.html",
+		"/Users/samminns/Documents/workspaceJS/SWEN303_project_vers 2/WebContent/2008.html",
+		"/Users/samminns/git/SWEN301_Project/data/nationalCities.json",
+		"/Users/samminns/git/SWEN301_Project/pages/login.html",
+		"/Users/samminns/git/SWEN301_Project/data/master_simulation.json",
+		"/Users/samminns/git/SWEN301_Project/styles/bootstrap/dist/css/bootstrap.css",
+		"/Users/samminns/git/SWEN301_Project/data/mail_04.json",
+		"/Users/samminns/git/SWEN301_Project/pages/addMailItem.html",
+		"/Users/samminns/git/SWEN301_Project/pages/main.css",
+		"/Users/samminns/git/SWEN301_Project/pages/updateRoute.html",
+		"/Users/samminns/git/SWEN301_Project/pages/updatePrice.html",
+		"/Users/samminns/git/SWEN301_Project/pages/addRoute.html",
+		"/Users/samminns/git/SWEN301_Project/angular/angular.js",
+		"/Users/samminns/git/SWEN301_Project/index.html",
+		"/Users/samminns/Documents/workspaceJS/SWEN303_project/WebContent/index.html",
+		"/Users/samminns/git/SWEN301_Project/runServer",
+		"/Users/samminns/Documents/workspaceJS/SWEN303_project_vers 2/WebContent/seasonPages/2008.html",
+		"/Users/samminns/Documents/workspaceJS/SWEN303_project/WebContent/indexbb.html",
+		"/Users/samminns/Documents/workspaceJS/SWEN303_project/WebContent/indexbbbbbb.html",
+		"/Users/samminns/Documents/workspaceJS/SWEN303_project/WebContent/indexTwo.html",
+		"/Users/samminns/Documents/workspaceJS/SWEN303_project/WebContent/indexxxx.html",
+		"/Users/samminns/Documents/workspaceJS/SWEN303_project_vers 2/WebContent/data/2008-Table1.csv",
+		"/Users/samminns/Documents/workspaceJS/SWEN303_project_vers 2/WebContent/data/2009-Table1.csv",
+		"/Users/samminns/Documents/workspaceJS/SWEN303_project_vers 2/WebContent/data/2010-Table1.csv",
+		"/Users/samminns/Documents/workspaceJS/SWEN303_project_vers 2/WebContent/data/2013-Table1.csv",
+		"/Users/samminns/Documents/workspaceJS/SWEN303_project_vers 2/WebContent/data/2012-Table1.csv",
+		"/Users/samminns/Documents/workspaceJS/SWEN303_project_vers 2/WebContent/data/2011-Table1.csv",
+		"/Users/samminns/Downloads/DLMUSIC/gist5189284-67ece70ccf8c5e8fff802ed1410fea505701d378/world-110m2.json",
+		"/Users/samminns/Documents/workspaceJS/SWEN303_project/WebContent/subregion_Australia_and_New_Zealand_subunits.json",
+		"/Users/samminns/Documents/workspaceJS/SWEN303_project_vers 2/WebContent/styles/bootstrap/dist/css/bootstrap.css",
+		"/Users/samminns/Documents/workspace/FileCleaner_Swen303/src/2013-Table1.csv",
+		"/Users/samminns/Documents/workspace/FileCleaner_Swen303/src/2012-Table1.csv",
+		"/Users/samminns/Documents/workspace/FileCleaner_Swen303/src/2011-Table1.csv",
+		"/Users/samminns/Documents/workspace/FileCleaner_Swen303/src/2010-Table1.csv",
+		"/Users/samminns/Documents/workspace/FileCleaner_Swen303/src/2009-Table1.csv"
+	],
+	"find":
+	{
+		"height": 35.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"console",
+			"i.map",
+			");\n",
+			"];\n",
+			"prices",
+			"btn-prima",
+			"btn",
+			"label",
+			"simulation",
+			"footer",
+			"a",
+			".a",
+			"100px",
+			"navbar",
+			"	\n",
+			"seasonPages/",
+			"teamPages/",
+			"teamNames",
+			" – ",
+			"\n – ",
+			" – \n-",
+			"-\n-",
+			" \n-",
+			" \n - ",
+			" – ",
+			"–",
+			" - ",
+			"-",
+			"–",
+			"    .",
+			"\\'",
+			"'",
+			"legen",
+			";\n",
+			"input",
+			"input-xlarge",
+			"		\n",
+			"form-horizontal",
+			"controls",
+			"control",
+			"control-label",
+			"control-group",
+			"multi",
+			"legen",
+			"input",
+			"snipp",
+			"template"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"costs",
+			"",
+			" "
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": true,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "WebContent/fever.html",
+					"settings":
+					{
+						"buffer_size": 4519,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3033,
+								3033
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false,
+							"word_wrap": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1351.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "WebContent/d3Functions.js",
+					"settings":
+					{
+						"buffer_size": 310,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								310,
+								310
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "WebContent/styles/main.css",
+					"settings":
+					{
+						"buffer_size": 1943,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1564,
+								1564
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/CSS/CSS.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 690.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "WebContent/2009.html",
+					"settings":
+					{
+						"buffer_size": 2381,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								987,
+								1587
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/AngularJS/AngularJS.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 390.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 0.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"replace":
+	{
+		"height": 64.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"show_minimap": false,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 165.0,
+	"status_bar_visible": true
+}

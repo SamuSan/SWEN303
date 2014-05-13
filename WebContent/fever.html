@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8"> 
+<head>
+
+<link rel="stylesheet" href="styles/bootstrap/dist/css/bootstrap.css">
+<link rel="stylesheet" href="styles/main.css">
+
+
+
+</head>
+
+<body>
+<script type="text/javascript" src="d3/d3.min.js"></script> 
+<script type="text/javascript" src="node_modules/topojson/topojson.min.js"></script>
+<script type="text/javascript" src="d3Functions.js"></script>
+
+<script type="text/javascript">
+var feverTeamName = "West Coast Fever";
+var colorScale = d3.scale.ordinal()
+					.domain(0,1)
+					.range(["#000000","#32CD32"]);
+// var colorScaleLin = d3.scale.linear()
+// 					.domain(0,1)
+// 					.range(["#191970","#008080"]);
+	var svg = d3.select("body")
+				.append("svg")
+				.attr("width", width)
+				.attr("height", height);
+
+function getWinLoss(data){
+var seasonWinLoss = new Array();
+
+var winCount = 0;
+var lossCount= 0;
+var insertDex=0;
+var seasons = data.seasons[0];
+
+	for (var i = 1; i > 0; i--) {
+		var season = seasons[year];
+		for (var x = season.length - 1; x >= 0; x--) {
+				if(season[x].winner === feverTeamName){
+					winCount+=1;
+				}
+				else if(season[x].loser === feverTeamName){
+					lossCount +=1;
+				}
+
+		};
+		var seasonWinOutCome = {
+					"year" : year,"label" : "Won","count": winCount
+			};
+		var seasonLossOutCome = {
+					"year" : year,"label" : "Lost","count": lossCount
+			};
+	seasonWinLoss[insertDex] = seasonWinOutCome;
+	seasonWinLoss[insertDex+1] = seasonLossOutCome;
+	insertDex+=2;
+	// year+=1;
+	winCount =0;
+	lossCount =0;
+};
+
+return seasonWinLoss;
+};
+
+function showResultsDetails(inputData, record){
+
+		d3.json("data/allSeasons.json",function(data){
+			// console.log(record);
+			var season = data.seasons[0][record.year];
+			svg.selectAll("g.arc").remove();
+			var boxGroup = svg.append("g").attr("id","boxGroup");
+			var gameGroup = svg.append("g").attr("id","gameGroup");
+
+			if(record.label === "Won"){
+			var box =	boxGroup.selectAll("rect")
+							.data(season)
+
+							.enter()
+							.append("rect")
+							.filter(function(d){
+								return (d.winner === feverTeamName);
+							})
+							.attr("x", 100)
+							.attr("y", height/8)
+							.attr("width", width/2)
+							.attr("height", height/2)
+							.attr("fill", function(d, i){
+								return colorScale(i);
+							});
+			var games = gameGroup.selectAll("circle")
+							.data(season)
+							.enter()
+							.append("circle")
+							.filter(function(d){return d.winner == feverTeamName;})
+							.attr("cx", function(d,i){
+								// if(d.round == season){
+									console.log(i)
+								return 250 +( i*200);
+							// }
+							})
+							.attr("cy", function(d,i){
+								// if(d.round == season){
+								return height /2;
+							// }
+							})
+							.attr("r", function(d,i){
+								// if(d.round == season){
+								return d.winnerScore;
+							// }
+							})
+							.attr("class", function(d){
+								// if(d.round == season){
+								var winner = d.winner;
+								console.log(stripSpaces(winner,"Circle"))
+								return stripSpaces(winner,"Circle");
+							// }
+							}).append("text", function(d){
+								return d.winner + " : " + d.winnerScore+ " - " + d.loserScore + " : " + d.loser;
+							});
+				
+
+
+
+				console.log(record.label);
+
+			}
+			else if(record.label === "Lost"){
+				console.log(record.label);
+			}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		// console.log(data);
+		// console.log(season);
+
+			});
+};
+
+function display(){
+	d3.json("data/allSeasons.json",function(data){
+	var winLoss = getWinLoss(data);
+		// console.log(winLoss);
+
+	var arc = d3.svg.arc()
+					.innerRadius(pieInnerRadius)
+					.outerRadius(pieRadius);
+
+	// var svg = d3.select("body")
+	// 			.append("svg")
+	// 			.attr("width", width)
+	// 			.attr("height", height);
+
+ 	var pie = d3.layout.pie()
+ 				.value(function(d){
+ 					return d.count;
+ 				});
+
+ 	var pieData = pie(winLoss);
+	// console.log(pieData);
+
+	var arcs = svg.selectAll("g.arc")
+					.data(pieData)
+					.enter()
+					.append("g")
+					.attr("class","arc")
+					.attr("transform","translate("+(pieRadius+(width/8))+","+(pieRadius+(height/16))+")")
+					.on("click",function(d){
+						return showResultsDetails(d, d.data);
+					} );
+
+	arcs.append("path")
+		.attr("fill", function(d,i){
+			return colorScale(i);
+		})
+		.attr("d",arc);
+
+	arcs.append("text")
+		.attr("transform", function(d){
+			return "translate("+ arc.centroid(d)+")";
+		})
+		.attr("fill", "#FFFFFF")
+		.attr("text-anchor", "middle")
+		.text(function(d){
+			// console.log(d.data.label);
+			return d.data.label;
+		});
+
+
+
+	});
+		
+};
+
+display();
+
+
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,9 @@
+#menuNav{
+	display: box;
+	box-orient:vertical;
+right: 20;
+}
+#buttStyle{
+	font-size: 100px;
+}
+

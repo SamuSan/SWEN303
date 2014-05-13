@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8"> 
+<head>
+
+<link rel="stylesheet" href="styles/bootstrap/dist/css/bootstrap.css">
+<link rel="stylesheet" href="styles/main.css">
+
+
+
+</head>
+
+<body>
+<script type="text/javascript" src="d3/d3.min.js"></script> 
+<script type="text/javascript" src="node_modules/topojson/topojson.min.js"></script>
+
+
+<script type="text/javascript">
+
+var width = 2000;
+var height = 600;
+function stripSpaces(str, classType){
+			var cssClassName = str.replace(/\s+/g, '');
+			var cssClass = cssClassName.concat(classType);
+			return cssClass;
+	
+}
+
+var svg = d3.select("body").append("svg")
+			.attr("width", width)
+			.attr("height", height);
+
+function display(fileName){d3.json(file,function(data){
+	console.log(data);
+var season = 1;
+	
+	
+			svg.selectAll("circle")
+			.data(data)
+			.enter()
+			.append("circle")
+			.attr("cx", function(d,i){
+				if(d.round == season){
+				return 250 +( i*200);
+			}
+			})
+			.attr("cy", function(d,i){
+				if(d.round == season){
+				return height /2;
+			}
+			})
+			.attr("r", function(d,i){
+				if(d.round == season){
+				return d.winnerScore;
+			}
+			})
+			.attr("class", function(d){
+				if(d.round == season){
+				var winner = d.winner;
+				console.log(stripSpaces(winner,"Circle"))
+				return stripSpaces(winner,"Circle");
+			}
+			})
+			.attr("text","bloody text");
+			// .append("svg:image")
+			// .attr("href",function(d){
+			// 	var winner = d.winner;
+			// 	console.log(stripSpaces(winner,".jpg"))
+			// 	return "images/".concat( stripSpaces(winner,".jpg"));
+			// });	
+
+		});
+		
+}
+display("data/2008AnzChamp.json");
+</script>
+<div >
+<button class="btn btn-info" type="submit">Button</button>
+
+</div>
+
+</body>
+</html>
