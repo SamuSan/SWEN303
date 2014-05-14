@@ -12,9 +12,33 @@
 
 <body>
 <script type="text/javascript" src="d3/d3.min.js"></script> 
-<script type="text/javascript" src="node_modules/topojson/topojson.min.js"></script>
+<script type="text/javascript" src="teamData.js"></script>
+<script type="text/javascript" src="d3Functions.js"></script>
+<script>
+var teamName = teamNames[3];
+
+
+var svg = d3.select("body")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+var imageGroup = svg.append("g");
+
+    var images= imageGroup.selectAll("circle")
+            .data(teamNames)
+            .enter()
+            .append("circle")
+            .attr("cx", 100)
+            .attr("cy", 100)
+            .attr("r", 100)
+            .append("text", function(d, i){
+                return d[i];
+            });
 
 
 
+</script>
+<div id="imageDiv"></div>
 </body>
 </html>

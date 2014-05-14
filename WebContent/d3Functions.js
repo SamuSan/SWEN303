@@ -7,7 +7,7 @@
 
 
 
-var year = 2013;
+
 var pieInnerRadius = 30;
 var pieRadius = 200;
 
