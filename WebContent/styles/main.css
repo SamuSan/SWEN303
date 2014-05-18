@@ -107,6 +107,7 @@ td{
 }
 body {
     font-family: Verdana,Arial,sans-serif;
+    background-color: #d4d4d2;
 }
 
 h2 {
@@ -123,4 +124,9 @@ h2 {
 
 .wrapper > div {
     margin: 35px 0;
+}
+
+.buttonImgDiv{
+    height: 100px;
+    width: 100px;
 }
