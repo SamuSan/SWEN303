@@ -3171,7 +3171,7 @@ input[type="button"].btn-block {
 }
 .btn-toolbar .btn-group,
 .btn-toolbar .input-group {
-  float: left;
+  float: right;
 }
 .btn-toolbar > .btn,
 .btn-toolbar > .btn-group,

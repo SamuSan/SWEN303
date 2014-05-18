@@ -22,6 +22,7 @@ var feverTeamName = "West Coast Fever";
 var colorScale = d3.scale.ordinal()
 					.domain(0,1)
 					.range(["#000000","#32CD32"]);
+var year = 2008;
 // var colorScaleLin = d3.scale.linear()
 // 					.domain(0,1)
 // 					.range(["#191970","#008080"]);
@@ -61,10 +62,10 @@ var seasons = data.seasons[0];
 	// year+=1;
 	winCount =0;
 	lossCount =0;
-};
+}
 
 return seasonWinLoss;
-};
+}
 
 function showResultsDetails(inputData, record){
 
@@ -137,56 +138,56 @@ function showResultsDetails(inputData, record){
 			});
 }
 
-	d3.json("data/allSeasons.json",function(data){
-	var winLoss = getWinLoss(data);
-		// console.log(winLoss);
+function visualise() {
+    d3.json("data/allSeasons.json", function (data) {
+        var winLoss = getWinLoss(data);
+ console.log(winLoss);
 
-	var arc = d3.svg.arc()
-					.innerRadius(pieInnerRadius)
-					.outerRadius(pieRadius);
-
-
-
- 	var pie = d3.layout.pie()
- 				.value(function(d){
- 					return d.count;
- 				});
-
- 	var pieData = pie(winLoss);
-	// console.log(pieData);
-
-	var arcs = svg.selectAll("g.arc")
-					.data(pieData)
-					.enter()
-					.append("g")
-					.attr("class","arc")
-					.attr("transform","translate("+(width/2)+","+(pieRadius+(height/16))+")")
-					.on("click",function(d){
-						return showResultsDetails(d, d.data);
-					} );
-
-	arcs.append("path")
-		.attr("fill", function(d,i){
-			return colorScale(i);
-		})
-		.attr("d",arc);
-
-	arcs.append("text")
-		.attr("transform", function(d){
-			return "translate("+ arc.centroid(d)+")";
-		})
-		.attr("fill", "#FFFFFF")
-		.attr("text-anchor", "middle")
-		.text(function(d){
-			// console.log(d.data.label);
-			return d.data.label +" : "+d.data.count;
-		});
+        var arc = d3.svg.arc()
+                .innerRadius(pieInnerRadius)
+                .outerRadius(pieRadius);
 
 
+        var pie = d3.layout.pie()
+                .value(function (d) {
+                    return d.count;
+                });
 
-	});
+        var pieData = pie(winLoss);
+// console.log(pieData);
+
+        var arcs = svg.selectAll("g.arc")
+                .data(pieData)
+                .enter()
+                .append("g")
+                .attr("class", "arc")
+                .attr("transform", "translate(" + (width / 2) + "," + (pieRadius + (height / 16)) + ")")
+                .on("click", function (d) {
+                    return showResultsDetails(d, d.data);
+                });
+
+        arcs.append("path")
+                .attr("fill", function (d, i) {
+                    return colorScale(i);
+                })
+                .attr("d", arc);
+
+        arcs.append("text")
+                .attr("transform", function (d) {
+                    return "translate(" + arc.centroid(d) + ")";
+                })
+                .attr("fill", "#FFFFFF")
+                .attr("text-anchor", "middle")
+                .text(function (d) {
+// console.log(d.data.label);
+                    return d.data.label + " : " + d.data.count;
+                });
+
+
+    });
+}
 		
-
+visualise();
 
 
 
@@ -195,7 +196,9 @@ function showResultsDetails(inputData, record){
 <div id="slider1" class="wrapper"></div>
 <script>
     d3.select('#slider1').call(d3.slider().axis(d3.svg.axis().ticks(5)).min(2008).max(2013).step(1).on("slide",function(evt, value){
-console.log(value);
+year = value;
+        visualise();
+        console.log("Current Year"+year);
     }));
 
 </script>
