@@ -8,21 +8,101 @@
     <link rel="stylesheet" href="styles/d3.slider.css">
 
 
-
 </head>
 
 <body>
 <script type="text/javascript" src="d3/d3.min.js"></script>
 <script type="text/javascript" src="node_modules/topojson/topojson.min.js"></script>
 <script type="text/javascript" src="js/d3slider/d3.slider.js"></script>
-<div style="align-content: middle"><h3>Season</h3>
+<script type="text/javascript" src="d3Functions.js"></script>
+
+<div class="wrapper">  <header>Seasons</header></div>
 <div id="seasonSlider" class="wrapper">
 
 
 </div>
-</div>
-    <script type="text/javascript">
 
+<script type="text/javascript">
+var teamColors = [
+    {
+        AdelaideThunderbirdsRect: [
+            {'fill1': '#FF1493' /* Pink */, 'fill2': '#FFFFF1'/* White */}
+        ]
+
+    },
+    {
+        CentralPulseRect: [
+            {
+                "fill1": "#FFFF00", /* Yellow */
+                "fill2": "#1560BD" /* Blue */
+            }
+        ]
+    }
+    ,
+    {                            /*CANTERBURY TACTIX*/
+        CanterburyTactixRect: [
+            {
+                "fill1": '#FF0000', /* Red */
+                "fill2": '#000000'/* Black */
+            }
+        ]
+    },
+    {                            /* MELB VIX*/
+        MelbourneVixensRect: [
+            {
+                "fill1": '#191970', /* Dark Blue */
+                "fill2": '#008080'/* Green */
+            }
+        ]
+    },
+    {                            /*NSW SWIFTS*/
+        NewSouthWalesSwiftsRect: [
+            {
+                "fill1": '#FF0000', /*Red*/
+                "fill2": '#6495ED'/*Light Blue*/
+            }
+        ]
+    },
+    {                            /*NORTHERN MYSTICS*/
+        NorthernMysticsRect: [
+            {
+                "fill1": '#0000FF', /* Royal Blue */
+                "fill2": '#FF0000'/* Red */
+            }
+        ]
+    },
+    {                            /*QUEENSLAND FIREBIRDS*/
+        QueenslandFirebirdsRect: [
+            {
+                "fill1": '#800080', /* Purple */
+                "fill2": '#FFA500'/* Gold */
+            }
+        ]
+    },
+    {                            /*SOUTHERN STEEL*/
+        SouthernSteelRect: [
+            {
+                "fill1": '#00B7EB', /* Light Blue*/
+                "fill2": '#000000'/*Black*/
+            }
+        ]
+    },
+    {                            /*WAIKATO BAY OF PLENTY MAGIC*/
+        WaikatoBayofPlentyMagicRect: [
+            {
+                "fill1": '#000000', /* Black */
+                "fill2": '#FF4500'/* Orange */
+            }
+        ]
+    },
+    {                            /*WESTCOST FEVER*/
+        WestCoastFeverRect: [
+            {
+                "fill1": '#000000', /* Black */
+                "fill2": '#32CD32'/* Bright Ugly Green*/
+            }
+        ]}
+];
     var teamNames = [
         "Adelaide Thunderbirds",
         "Central Pulse" ,
@@ -36,37 +116,68 @@
         "West Coast Fever"
     ];
 
-    var width = 1000;
-    var height = 500;
-    var currRound =1;
+    var width = 2000;
+    var height = 700;
+    var rectHeight = 30;
+    var rectWidth= 50;
+    var padding = 400;
+    var buffer = 30;
+    var currRound = 1;
     var currSeason = 2008;
     var svg = d3.select("body")
             .append("svg")
             .attr("width", width)
-            .attr("height", height);
+            .attr("height", height)
+            .attr("transform","translate("+400+","+30+")" );
 
-    var winContainer = svg.append("g");
-    var lossContainer = svg.append("g");
-    var textContainer = svg.append("g");
+    var teamContainer = svg.append("g");
+
+    var yScale = d3.scale.linear()
+            .domain([0, 34])
+            .range([height-50, 10]);
+    var pointsAxis = d3.svg.axis()
+            .orient("left").ticks(34)
+            .scale(yScale);
 
 
-    //    Begin main function
+    //Begin Main Function
     d3.json("data/allSeasons.json", function (data) {
 
+        var dataSet = getRoundOutComes(data);
 
 
+        //Y axis for points
+                svg.append("g")
+                .attr("transform", "translate(0,0)")
+                .call(pointsAxis);
+        svg.append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("y", (0-70))
+                .attr("x",0 - (height / 2))
+                .attr("dy", "1em")
+                .style("text-anchor", "middle")
+                .text("Points");
 
-
-
-
-
-
-
-
-
-
-
-
+            teamContainer.selectAll("rect")
+                    .data(dataSet)
+                    .enter()
+                    .append("rect")
+                    .attr("width", rectWidth)
+                    .attr("height", rectHeight)
+                    .attr("x", function(d,i){
+                      return (width / 25)*i + 10;
+                    })
+                    .attr("y", function(d,i){
+                        console.log(d.Points);
+                        return yScale(d.Points)-(rectHeight /2);
+                    })
+                    .attr("class", function(d){
+                        // if(d.round == season){
+                        var winner = d.Team;
+                        console.log(stripSpaces(winner,"Circle"))
+                        return stripSpaces(winner,"Circle");
+                        // }
+                    });
 
 
 
@@ -77,57 +188,86 @@
 
 // Begin Roudn out comes
 
-        function getRoundOutComes(dataSet, round) {
-            var roundWinLoss = [];
-            var round = +round;
-            var winCount = 0;
-            var lossCount = 0;
-//for eahc team
-            //for currently selected season
-            //for currently select round
-            //
+        function getRoundOutComes(dataSet) {
+            var teamResultsByRound=[];
+            var season = dataSet["seasons"][0][currSeason];
+            console.log(season);
+            for (var e = 0; e < teamNames.length; e++) {
+                var points =0;
+
+                    for (var j = currRound; j>=1;j--) {
+
+                    var extractByRound = season.filter(function(d){
+                            return d.round === j ;
+                        });
 
 
-            for (var i = 5; i >= 0; i--) {
-                var season = data["seasons"][0][currSeason];
-                for (var x = 0; x >= season.length - 1; x++) {
-                    if (season[x].winner === currTeam) {
-                        winCount += 1;
+                        for (var i = 0; i<extractByRound.length ; i++ ) {
+                            if (teamNames[e] === extractByRound[i]["winner"]) {
+                                points += 2;
+                            }
+                        }
                     }
-                    else if (season[x].loser === currTeam) {
-                        lossCount += 1;
-                    }
-                }
-                var seasonRoundOutCome = {
-                    "team": currTeam,"round":currRound, "year": currSeason,"points":(wincount*2), "winlabel": "Won", "wincount": winCount, "lostlabel": "Lost", "losscount": lossCount
-                };
-                roundWinLoss.push(seasonRoundOutCome);
-                round += 1;
-                winCount = 0;
-                lossCount = 0;
-
+                teamResultsByRound.push({"Team": teamNames[e],"Points" :  points})
             }
-
-
-            return roundWinLoss;
+//            console.log(teamResultsByRound);
+            teamResultsByRound.sort(function(a,b){
+                return b["Points"]- a["Points"];
+            });
+            return teamResultsByRound;
+//console.log(teamResultsByRound);
         }
 
 //End Round outcomes
 
 
 //Two Sliders
-           //Season
+
+        //Season
         d3.select('#seasonSlider').call(d3.slider().axis(d3.svg.axis().ticks(5)).min(2008).max(2013).step(1).on("slide", function (evt, value) {
             currSeason = +value;
+            change();
             console.log(currSeason);
         }));
         //Round
         d3.select('#roundSlider').call(d3.slider().axis(d3.svg.axis().ticks(17)).min(1).max(17).step(1).on("slide", function (evt, value) {
             currRound = +value;
+            change();
             console.log(currRound);
         }));
 //End Sliders
+        function getIndex(name) {
+            return teamNames.indexOf(name);
+        }
 
+
+
+        function change(){
+            var newData = getRoundOutComes(data);
+            teamContainer.selectAll("rect")
+                    .data(newData)
+                    .transition()
+                    .delay(0)
+                    .duration(300)
+                    .ease("bounce")
+                    .attr("width", rectWidth)
+                    .attr("height", rectHeight)
+                    .attr("x", function(d,i){
+                        return (width / 25)*i+10;
+                    })
+                    .attr("y", function(d,i){
+                        console.log(d.Points);
+                        return yScale(d.Points)-(rectHeight /2);
+                    })
+                    .attr("class", function(d){
+                        // if(d.round == season){
+                        var winner = d.Team;
+                        console.log(stripSpaces(winner,"Circle"))
+                        return stripSpaces(winner,"Circle");
+                        // }
+                    })
+                    .attr("desc","FUCKERY");
+        }
     });
     //End Main Function
 
@@ -136,10 +276,7 @@
 <div id="roundSlider" class="wrapper">
 
 
-
-
-
 </div>
-
+<footer class="wrapper">Rounds</footer>
 </body>
 </html>
