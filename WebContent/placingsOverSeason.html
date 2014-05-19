@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head>
+
+    <link rel="stylesheet" href="styles/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/d3.slider.css">
+
+
+
+</head>
+
+<body>
+<script type="text/javascript" src="d3/d3.min.js"></script>
+<script type="text/javascript" src="node_modules/topojson/topojson.min.js"></script>
+<script type="text/javascript" src="js/d3slider/d3.slider.js"></script>
+<div style="align-content: middle"><h3>Season</h3>
+<div id="seasonSlider" class="wrapper">
+
+
+</div>
+</div>
+    <script type="text/javascript">
+
+    var teamNames = [
+        "Adelaide Thunderbirds",
+        "Central Pulse" ,
+        "Canterbury Tactix",
+        "Melbourne Vixens",
+        "New South Wales Swifts",
+        "Northern Mystics",
+        "Queensland Firebirds",
+        "Southern Steel",
+        "Waikato Bay of Plenty Magic",
+        "West Coast Fever"
+    ];
+
+    var width = 1000;
+    var height = 500;
+    var currRound =1;
+    var currSeason = 2008;
+    var svg = d3.select("body")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+    var winContainer = svg.append("g");
+    var lossContainer = svg.append("g");
+    var textContainer = svg.append("g");
+
+
+    //    Begin main function
+    d3.json("data/allSeasons.json", function (data) {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Begin Roudn out comes
+
+        function getRoundOutComes(dataSet, round) {
+            var roundWinLoss = [];
+            var round = +round;
+            var winCount = 0;
+            var lossCount = 0;
+//for eahc team
+            //for currently selected season
+            //for currently select round
+            //
+
+
+            for (var i = 5; i >= 0; i--) {
+                var season = data["seasons"][0][currSeason];
+                for (var x = 0; x >= season.length - 1; x++) {
+                    if (season[x].winner === currTeam) {
+                        winCount += 1;
+                    }
+                    else if (season[x].loser === currTeam) {
+                        lossCount += 1;
+                    }
+                }
+                var seasonRoundOutCome = {
+                    "team": currTeam,"round":currRound, "year": currSeason,"points":(wincount*2), "winlabel": "Won", "wincount": winCount, "lostlabel": "Lost", "losscount": lossCount
+                };
+                roundWinLoss.push(seasonRoundOutCome);
+                round += 1;
+                winCount = 0;
+                lossCount = 0;
+
+            }
+
+
+            return roundWinLoss;
+        }
+
+//End Round outcomes
+
+
+//Two Sliders
+           //Season
+        d3.select('#seasonSlider').call(d3.slider().axis(d3.svg.axis().ticks(5)).min(2008).max(2013).step(1).on("slide", function (evt, value) {
+            currSeason = +value;
+            console.log(currSeason);
+        }));
+        //Round
+        d3.select('#roundSlider').call(d3.slider().axis(d3.svg.axis().ticks(17)).min(1).max(17).step(1).on("slide", function (evt, value) {
+            currRound = +value;
+            console.log(currRound);
+        }));
+//End Sliders
+
+    });
+    //End Main Function
+
+
+</script>
+<div id="roundSlider" class="wrapper">
+
+
+
+
+
+</div>
+
+</body>
+</html>
