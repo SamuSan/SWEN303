@@ -107,7 +107,7 @@ td{
 }
 body {
     font-family: Verdana,Arial,sans-serif;
-    background-color: #d4d4d2;
+    background-color: #ffffff;
 }
 
 h2 {
@@ -132,3 +132,35 @@ h2 {
     height: 100px;
     width: 100px;
 }
+.mapStyle{
+    fill:#009DDD;
+}
+.titleBarANZ{
+text-align: center;
+    color: #009DDD;
+    /*background-color:#FF1493 ;*/
+
+
+}
+.imgANZ{
+    margin-top: 20px;
+
+
+}
+.sexyMainDiv{
+    border-radius: 10px;
+    opacity: 1;
+    background-color: #BEBEBE;
+    margin: 10px 5px 10px 5px;
+    position: relative;
+    width: 100%;
+
+}
+
+/*Country Styles Jesus this is getting convoluted*/
+.subunits2.NZA{fill:#009DDD;}
+.subunits2.NZC{fill:#009DDD;}
+.subunits2.NZK{fill:#009DDD;}
+.subunits2.NZN{fill:#009DDD;}
+.subunits2.NZS{fill:#009DDD;}
+.subunits2.AUS{fill:#FF1493;}
