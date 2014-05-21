@@ -8,8 +8,7 @@
 
 
 
-var pieInnerRadius = 30;
-var pieRadius = 200;
+
 
 
 //var width = 900;

@@ -16,186 +16,181 @@
 <script type="text/javascript" src="js/d3slider/d3.slider.js"></script>
 <script type="text/javascript" src="d3Functions.js"></script>
 <div class="sexyMainDiv">
-<table id="contentTable">
-<!--<tr>-->
-<!--<td></td>-->
-    <!--<td class="titleBarANZ">         <img class="imgANZ" src="images/anzChampionshipSML.png" >  </td>-->
-<!--</tr>-->
-    <tr>
-
-        <td clas="imageDiv">
-        <!--<img src="images/anzChampionship.jpg" >-->
-        </td>
-        <td>
-            <div id="svgDiv"></div>
-        </td>
-        <td>
-            <div id="blah"></div>
-        </td>
-    </tr>
-</table>
+    <table id="contentTable">
+        <tr>
+            <td></td>
+            <td>
+                <div id="svgDiv"></div>
+            </td>
+            <td>
+                <div id="blah"></div>
+            </td>
+        </tr>
+    </table>
 </div>
 <script type="text/javascript">
-    var teamColors = [
-        {
-            AdelaideThunderbirdsRect: [
-                {'fill1': '#FF1493' /* Pink */, 'fill2': '#FFFFF1'/* White */}
-            ]
+var teamColors = [
+    {
+        AdelaideThunderbirdsRect: [
+            {'fill1': '#FF1493' /* Pink */, 'fill2': '#FFFFF1'/* White */}
+        ]
 
-        },
-        {
-            CentralPulseRect: [
-                {
-                    "fill1": "#FFFF00", /* Yellow */
-                    "fill2": "#1560BD" /* Blue */
-                }
-            ]
-        }
-        ,
-        {                            /*CANTERBURY TACTIX*/
-            CanterburyTactixRect: [
-                {
-                    "fill1": '#FF0000', /* Red */
-                    "fill2": '#000000'/* Black */
-                }
-            ]
-        },
-        {                            /* MELB VIX*/
-            MelbourneVixensRect: [
-                {
-                    "fill1": '#191970', /* Dark Blue */
-                    "fill2": '#008080'/* Green */
-                }
-            ]
-        },
-        {                            /*NSW SWIFTS*/
-            NewSouthWalesSwiftsRect: [
-                {
-                    "fill1": '#FF0000', /*Red*/
-                    "fill2": '#6495ED'/*Light Blue*/
-                }
-            ]
-        },
-        {                            /*NORTHERN MYSTICS*/
-            NorthernMysticsRect: [
-                {
-                    "fill1": '#0000FF', /* Royal Blue */
-                    "fill2": '#FF0000'/* Red */
-                }
-            ]
-        },
-        {                            /*QUEENSLAND FIREBIRDS*/
-            QueenslandFirebirdsRect: [
-                {
-                    "fill1": '#800080', /* Purple */
-                    "fill2": '#FFA500'/* Gold */
-                }
-            ]
-        },
-        {                            /*SOUTHERN STEEL*/
-            SouthernSteelRect: [
-                {
-                    "fill1": '#00B7EB', /* Light Blue*/
-                    "fill2": '#000000'/*Black*/
-                }
-            ]
-        },
-        {                            /*WAIKATO BAY OF PLENTY MAGIC*/
-            WaikatoBayofPlentyMagicRect: [
-                {
-                    "fill1": '#000000', /* Black */
-                    "fill2": '#FF4500'/* Orange */
-                }
-            ]
-        },
-        {                            /*WESTCOST FEVER*/
-            WestCoastFeverRect: [
-                {
-                    "fill1": '#000000', /* Black */
-                    "fill2": '#32CD32'/* Bright Ugly Green*/
-                }
-            ]}
-    ];
-    var teamNames = [
-        "Adelaide Thunderbirds",
-        "Central Pulse" ,
-        "Canterbury Tactix",
-        "Melbourne Vixens",
-        "New South Wales Swifts",
-        "Northern Mystics",
-        "Queensland Firebirds",
-        "Southern Steel",
-        "Waikato Bay of Plenty Magic",
-        "West Coast Fever"
-    ];
-var teamCities = [
-        "Adelaide",
-        "Melbourne",
-        "Sydney",
-        "Brisbane",
-        "Perth",
-        "Christchurch",
-        "Wellington",
-        "Auckland",
-        "Invercargill",
-        "Hamilton"
-
+    },
+    {
+        CentralPulseRect: [
+            {
+                "fill1": "#FFFF00", /* Yellow */
+                "fill2": "#1560BD" /* Blue */
+            }
+        ]
+    }
+    ,
+    {                            /*CANTERBURY TACTIX*/
+        CanterburyTactixRect: [
+            {
+                "fill1": '#FF0000', /* Red */
+                "fill2": '#000000'/* Black */
+            }
+        ]
+    },
+    {                            /* MELB VIX*/
+        MelbourneVixensRect: [
+            {
+                "fill1": '#191970', /* Dark Blue */
+                "fill2": '#008080'/* Green */
+            }
+        ]
+    },
+    {                            /*NSW SWIFTS*/
+        NewSouthWalesSwiftsRect: [
+            {
+                "fill1": '#FF0000', /*Red*/
+                "fill2": '#6495ED'/*Light Blue*/
+            }
+        ]
+    },
+    {                            /*NORTHERN MYSTICS*/
+        NorthernMysticsRect: [
+            {
+                "fill1": '#0000FF', /* Royal Blue */
+                "fill2": '#FF0000'/* Red */
+            }
+        ]
+    },
+    {                            /*QUEENSLAND FIREBIRDS*/
+        QueenslandFirebirdsRect: [
+            {
+                "fill1": '#800080', /* Purple */
+                "fill2": '#FFA500'/* Gold */
+            }
+        ]
+    },
+    {                            /*SOUTHERN STEEL*/
+        SouthernSteelRect: [
+            {
+                "fill1": '#00B7EB', /* Light Blue*/
+                "fill2": '#000000'/*Black*/
+            }
+        ]
+    },
+    {                            /*WAIKATO BAY OF PLENTY MAGIC*/
+        WaikatoBayofPlentyMagicRect: [
+            {
+                "fill1": '#000000', /* Black */
+                "fill2": '#FF4500'/* Orange */
+            }
+        ]
+    },
+    {                            /*WESTCOST FEVER*/
+        WestCoastFeverRect: [
+            {
+                "fill1": '#000000', /* Black */
+                "fill2": '#32CD32'/* Bright Ugly Green*/
+            }
+        ]}
 ];
-    var factor = 10000;
-    var scale = 1400;
-    var width = 2000;
-    var height = 1160;
-    var rectHeight = 30;
-    var rectWidth = 50;
-    var padding = 400;
-    var buffer = 30;
-    var currRound = 1;
-    var currSeason = 2008;
-    var svg = d3.select("#svgDiv")
-            .append("svg")
-            .attr("width", width)
-            .attr("height", height)
-            .attr("transform", "translate(" + 300 + "," + 0 + ")");
+var teamNames = [
+    "Adelaide Thunderbirds",
+    "Central Pulse" ,
+    "Canterbury Tactix",
+    "Melbourne Vixens",
+    "New South Wales Swifts",
+    "Northern Mystics",
+    "Queensland Firebirds",
+    "Southern Steel",
+    "Waikato Bay of Plenty Magic",
+    "West Coast Fever"
+];
 
-    var mapContainer = svg.append("g");
+var factor = 10000;
+var scale = 1400;
+var width = 2000;
+var height = 1160;
+var rectHeight = 30;
+var rectWidth = 50;
+var padding = 400;
+var buffer = 30;
+var currRound = 1;
+var currSeason = 2008;
+var svg = d3.select("#svgDiv")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .attr("transform", "translate(" + 300 + "," + 0 + ")");
+
+var mapContainer = svg.append("g").attr("class", "map");
+var cityContainer = svg.append("g").attr("class", "cities");
+
+var teamCircleContainer = svg.append("g");
+
+var yScale = d3.scale.linear()
+        .domain([0, 34])
+        .range([height - 50, 10]);
+var pointsAxis = d3.svg.axis()
+        .orient("left").ticks(34)
+        .scale(yScale);
 
 
-    var yScale = d3.scale.linear()
-            .domain([0, 34])
-            .range([height - 50, 10]);
-    var pointsAxis = d3.svg.axis()
-            .orient("left").ticks(34)
-            .scale(yScale);
+//Begin Main Function
+d3.json("data/ausNzWithCitiesProper.json", function (ausNZ) {
 
 
-    //Begin Main Function
-    d3.json("data/ausNzWithCitiesProper.json", function (ausNZ) {
-
-        var projection = d3.geo.mercator().center([140,-18]).scale(scale);
-        svg.append("path")
-                .datum(topojson.feature(ausNZ, ausNZ.objects.subunits4))
-                .attr("d", d3.geo.path().projection(projection))
-                .attr("fill","#009DDD")
-                .on("click", function(d){
-                    var point = d3.mouse(this);
-                    var x = (point[0]) /width;
-                    var y = (point[1]) / height;
-
-                    console.log((point[0] + " "+ point[1]));
-                });
-
+    var projection = d3.geo.mercator().center([140, -18]).scale(scale);
+ mapContainer =    svg.append("path")
+            .datum(topojson.feature(ausNZ, ausNZ.objects.subunits4))
+            .attr("d", d3.geo.path().projection(projection))
+            .attr("fill", "#009DDD");
+//            .on("click", function (d) {
+//                var point = d3.mouse(this);
+//                var x = (point[0]) / width;
+//                var y = (point[1]) / height;
+//
+//                console.log((x + " " +y));
+//            });
 
 
 //    var cities = getCities();
 
-        svg.append("path")
-                .datum(topojson.feature(ausNZ, ausNZ.objects.places4))
-                .attr("d", d3.geo.path().projection(projection))
-                .attr("class", "place");
+    cityContainer = svg.append("path")
+            .datum(topojson.feature(ausNZ, ausNZ.objects.places4))
+            .attr("d", d3.geo.path().projection(projection).pointRadius(10))
+            .attr("class", "place").attr("fill", "#FF1493")
+            .on("click", function (d) {
+                var point = d3.mouse(this);
+                var x = (point[0]) / width;
+                var y = (point[1]) / height;
+
+                console.log((x + " " +y));
+            });
 
 
-
-
+//Anz Circle image to come
+    svg.append("circle")
+            .attr("cx", (width / 3) * 1.5)
+            .attr("cy", height / 6)
+            .attr("r", 150)
+//            .style("fill", "#009DDD")
+            .style("background-image"," url(../images/anzChampionshipNoBG.png");
 
 
 //Two Sliders
@@ -214,29 +209,29 @@ var teamCities = [
 //    }));
 //End Sliders
 
-function getCities(){
-    var cities = [];
-    for(var x = 0; x <  ausNZ.objects.places2.geometries.length; x++){
-        if (teamCities.indexOf(ausNZ.objects.places2.geometries[x].properties.name) !== -1) {
-            console.log(cities.indexOf(ausNZ.objects.places2.geometries[x]))
-            if(cities.indexOf(ausNZ.objects.places2.geometries[x]) ===-1){
-                cities.push(ausNZ.objects.places2.geometries[x]);
+    function getCities() {
+        var cities = [];
+        for (var x = 0; x < ausNZ.objects.places2.geometries.length; x++) {
+            if (teamCities.indexOf(ausNZ.objects.places2.geometries[x].properties.name) !== -1) {
+                console.log(cities.indexOf(ausNZ.objects.places2.geometries[x]))
+                if (cities.indexOf(ausNZ.objects.places2.geometries[x]) === -1) {
+                    cities.push(ausNZ.objects.places2.geometries[x]);
+                }
+
             }
-
         }
-    }
-    for(var x = 0; x <  cities.length; x++){
-        if (cities[x].properties.name ==="Hamilton") {
-        cities.splice(x,1);
-            break;
+        for (var x = 0; x < cities.length; x++) {
+            if (cities[x].properties.name === "Hamilton") {
+                cities.splice(x, 1);
+                break;
 
+            }
         }
-    }
 
-    console.log(ausNZ.objects.places2.geometries[x].properties.name)
-}
-    });
-    //End Main Function
+        console.log(ausNZ.objects.places2.geometries[x].properties.name)
+    }
+});
+//End Main Function
 
 
 </script>
