@@ -15,304 +15,294 @@
 
 
 <script type="text/javascript" src="d3/d3.min.js"></script>
+<script src="http://d3js.org/d3.v3.min.js"></script>
 <script type="text/javascript" src="d3Functions.js"></script>
 <script type="text/javascript" src="js/d3slider/d3.slider.js"></script>
 <div class="sexyMainDiv">
-    <select id="teamSelector" class="dropdown-menu-left">
-        <option> "Adelaide Thunderbirds"</option>
-        <option> "Melbourne Vixens"</option>
-        <option> "Central Pulse"</option>
-        <option> "Queensland Firebirds"</option>
-        <option> "Waikato Bay of Plenty Magic"</option>
-        <option> "Southern Steel"</option>
-        <option> "New South Wales Swifts"</option>
-        <option> "Northern Mystics"</option>
-        <option> "West Coast Fever"</option>
-        <option> "Canterbury Tactix"</option>
-    </select>
+<select id="teamSelector" class="dropdown-menu-left">
+    <option> "Adelaide Thunderbirds"</option>
+    <option> "Melbourne Vixens"</option>
+    <option> "Central Pulse"</option>
+    <option> "Queensland Firebirds"</option>
+    <option> "Waikato Bay of Plenty Magic"</option>
+    <option> "Southern Steel"</option>
+    <option> "New South Wales Swifts"</option>
+    <option> "Northern Mystics"</option>
+    <option> "West Coast Fever"</option>
+    <option> "Canterbury Tactix"</option>
+</select>
 
-    <table>
-        <tr>
-            <td></td>
-            <td id="barSvgCell">
-                <script type="text/javascript">
+<table>
+<tr>
+<td></td>
+<td id="barSvgCell">
+<script type="text/javascript">
 
-                    var width = 800;
-                    var height = 700;
+var width = 800;
+var height = 700;
 
-                    function stripQuotes(str) {
-                        var s = str.replace(/\"/g, '');
-                        return s;
+function stripQuotes(str) {
+    var s = str.replace(/\"/g, '');
+    return s;
+}
+var teamNames = [
+    "Adelaide Thunderbirds",
+    "Central Pulse" ,
+    "Canterbury Tactix",
+    "Melbourne Vixens",
+    "New South Wales Swifts",
+    "Northern Mystics",
+    "Queensland Firebirds",
+    "Southern Steel",
+    "Waikato Bay of Plenty Magic",
+    "West Coast Fever"
+];
+var currTeam = stripQuotes(document.getElementById("teamSelector").options[0].value);
+console.log("Initialised team = " + currTeam);
+var offSet = 30;
+var barWidth = 80;
+var factor = 20;
+var teamColors = [
+    {
+        AdelaideThunderbirdsRect: [
+            {'fill1': '#FF1493' /* Pink */, 'fill2': '#FFFFF1'/* White */}
+        ]
+
+    },
+    {
+        CentralPulseRect: [
+            {
+                "fill1": "#FFFF00", /* Yellow */
+                "fill2": "#1560BD" /* Blue */
+            }
+        ]
+    }
+    ,
+    {                            /*CANTERBURY TACTIX*/
+        CanterburyTactixRect: [
+            {
+                "fill1": '#FF0000', /* Red */
+                "fill2": '#000000'/* Black */
+            }
+        ]
+    },
+    {                            /* MELB VIX*/
+        MelbourneVixensRect: [
+            {
+                "fill1": '#191970', /* Dark Blue */
+                "fill2": '#008080'/* Green */
+            }
+        ]
+    },
+    {                            /*NSW SWIFTS*/
+        NewSouthWalesSwiftsRect: [
+            {
+                "fill1": '#FF0000', /*Red*/
+                "fill2": '#6495ED'/*Light Blue*/
+            }
+        ]
+    },
+    {                            /*NORTHERN MYSTICS*/
+        NorthernMysticsRect: [
+            {
+                "fill1": '#0000FF', /* Royal Blue */
+                "fill2": '#FF0000'/* Red */
+            }
+        ]
+    },
+    {                            /*QUEENSLAND FIREBIRDS*/
+        QueenslandFirebirdsRect: [
+            {
+                "fill1": '#800080', /* Purple */
+                "fill2": '#FFA500'/* Gold */
+            }
+        ]
+    },
+    {                            /*SOUTHERN STEEL*/
+        SouthernSteelRect: [
+            {
+                "fill1": '#00B7EB', /* Light Blue*/
+                "fill2": '#000000'/*Black*/
+            }
+        ]
+    },
+    {                            /*WAIKATO BAY OF PLENTY MAGIC*/
+        WaikatoBayofPlentyMagicRect: [
+            {
+                "fill1": '#000000', /* Black */
+                "fill2": '#FF4500'/* Orange */
+            }
+        ]
+    },
+    {                            /*WESTCOST FEVER*/
+        WestCoastFeverRect: [
+            {
+                "fill1": '#000000', /* Black */
+                "fill2": '#32CD32'/* Bright Ugly Green*/
+            }
+        ]}
+];
+var svg = d3.select("#barSvgCell")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .attr("transform", "translate(100,50)");
+var forceContainer = svg.append("g");
+var force = d3.layout.force()
+        .charge(-300)
+        .linkDistance(300)
+        .size([width, height]);
+var color = d3.scale.category20();
+
+
+//MAIN BEGIN
+
+d3.json("data/allSeasons.json", function (data) {
+
+    console.log(data);
+
+    var forceGraphData = getRivals(data);
+    //BEGIN FORCED
+
+force.nodes(forceGraphData.nodes)
+        .links(forceGraphData.links)
+        .start();
+
+var link =  svg.selectAll(".link")
+        .data(forceGraphData.links)
+        .enter()
+        .append("link")
+        .attr("class","link")
+        .style("stroke-width", function(d){
+            return d.value+1;
+        });
+
+    var node = svg.selectAll(".node")
+            .data(forceGraphData.nodes)
+            .enter().append("circle")
+            .attr("class", function(d){
+                var clazz = stripSpaces(d.name,"Circle");
+                return clazz;
+            })
+            .attr("r", 20)
+//            .style("fill", function(d) { return color(d.group); })
+            .call(force.drag);
+
+    node.append("title")
+            .text(function(d) { return d.name; });
+
+    force.on("tick", function() {
+        link.attr("x1", function(d) { return d.source.x; })
+                .attr("y1", function(d) { return d.source.y; })
+                .attr("x2", function(d) { return d.target.x; })
+                .attr("y2", function(d) { return d.target.y; });
+
+        node.attr("cx", function(d) { return d.x; })
+                .attr("cy", function(d) { return d.y; });
+    });
+
+
+
+
+
+    //END FORCED
+    console.log("Helo");
+
+
+    //Selector
+    d3.select("#teamSelector").on("change", function () {
+        console.log("DOINGFUCKING CHANGE BULLSHIT");
+        var sel = document.getElementById("teamSelector");
+        var name = stripQuotes(sel.options[sel.selectedIndex].value);
+        currTeam = name;
+        console.log(currTeam);
+    });
+    ///Selecter
+
+
+    function getRivals(data) {
+
+        var graph = {
+            nodes: [],
+            links: []
+        };
+
+
+        var linkIdx = 0;
+        for (var team in teamNames) {
+            graph.nodes[team] = {"name": teamNames[team], "group": team};
+
+            for (var team2 in teamNames) {
+                if (teamNames[team] !== teamNames[team2]) {
+                    var year = +2008;
+                    var winCount = 0;
+                    var lossCount = 0;
+
+                    for (var i = 5; i >= 0; i--) {
+                        var season = data["seasons"][0][year];
+                        for (var x = season.length - 1; x >= 0; x--) {
+                            if (season[x].winner === teamNames[team] && season[x].loser === teamNames[team2]) {
+                                winCount += 1;
+                            }
+                            else if (season[x].winner === teamNames[team2] && season[x].loser === teamNames[team]) {
+
+                                lossCount += 1;
+                            }
+                        }
+                        year += 1;
                     }
-                    var teamNames = [
-                        "Adelaide Thunderbirds",
-                        "Central Pulse" ,
-                        "Canterbury Tactix",
-                        "Melbourne Vixens",
-                        "New South Wales Swifts",
-                        "Northern Mystics",
-                        "Queensland Firebirds",
-                        "Southern Steel",
-                        "Waikato Bay of Plenty Magic",
-                        "West Coast Fever"
-                    ];
-                    var currTeam = stripQuotes(document.getElementById("teamSelector").options[0].value);
-                    console.log("Initialised team = " + currTeam);
-                    var offSet = 30;
-                    var barWidth = 80;
-                    var factor = 20;
-                    var teamColors = [
-                        {
-                            AdelaideThunderbirdsRect: [
-                                {'fill1': '#FF1493' /* Pink */, 'fill2': '#FFFFF1'/* White */}
-                            ]
 
-                        },
-                        {
-                            CentralPulseRect: [
-                                {
-                                    "fill1": "#FFFF00", /* Yellow */
-                                    "fill2": "#1560BD" /* Blue */
-                                }
-                            ]
-                        }
-                        ,
-                        {                            /*CANTERBURY TACTIX*/
-                            CanterburyTactixRect: [
-                                {
-                                    "fill1": '#FF0000', /* Red */
-                                    "fill2": '#000000'/* Black */
-                                }
-                            ]
-                        },
-                        {                            /* MELB VIX*/
-                            MelbourneVixensRect: [
-                                {
-                                    "fill1": '#191970', /* Dark Blue */
-                                    "fill2": '#008080'/* Green */
-                                }
-                            ]
-                        },
-                        {                            /*NSW SWIFTS*/
-                            NewSouthWalesSwiftsRect: [
-                                {
-                                    "fill1": '#FF0000', /*Red*/
-                                    "fill2": '#6495ED'/*Light Blue*/
-                                }
-                            ]
-                        },
-                        {                            /*NORTHERN MYSTICS*/
-                            NorthernMysticsRect: [
-                                {
-                                    "fill1": '#0000FF', /* Royal Blue */
-                                    "fill2": '#FF0000'/* Red */
-                                }
-                            ]
-                        },
-                        {                            /*QUEENSLAND FIREBIRDS*/
-                            QueenslandFirebirdsRect: [
-                                {
-                                    "fill1": '#800080', /* Purple */
-                                    "fill2": '#FFA500'/* Gold */
-                                }
-                            ]
-                        },
-                        {                            /*SOUTHERN STEEL*/
-                            SouthernSteelRect: [
-                                {
-                                    "fill1": '#00B7EB', /* Light Blue*/
-                                    "fill2": '#000000'/*Black*/
-                                }
-                            ]
-                        },
-                        {                            /*WAIKATO BAY OF PLENTY MAGIC*/
-                            WaikatoBayofPlentyMagicRect: [
-                                {
-                                    "fill1": '#000000', /* Black */
-                                    "fill2": '#FF4500'/* Orange */
-                                }
-                            ]
-                        },
-                        {                            /*WESTCOST FEVER*/
-                            WestCoastFeverRect: [
-                                {
-                                    "fill1": '#000000', /* Black */
-                                    "fill2": '#32CD32'/* Bright Ugly Green*/
-                                }
-                            ]}
-                    ];
-                    var svg = d3.select("#barSvgCell")
-                            .append("svg")
-                            .attr("width", width)
-                            .attr("height", height);
-                    var winContainer = svg.append("g");
-    var force = d3.layout.force()
-            .charge(-120)
-            .linkDistance(30)
-            .size([width,height]);
-
-                    //MAIN BEGIN
-
-                    d3.json("data/allSeasons.json", function (data) {
-                        var forceGraph = getRivals(data);
-                        //BEGIN FORCED
-                        d3.json(forceGraph, function(json){
-                            console.log(forceGraph);
-                        });
-
-                        //END FORCED
-                        console.log("Helo");
-
-
-
-
-
-
-
-
-
-
-
-
-                        //Selector
-                        d3.select("#teamSelector").on("change", function () {
-                            console.log("DOINGFUCKING CHANGE BULLSHIT");
-                            var sel = document.getElementById("teamSelector");
-                            var name = stripQuotes(sel.options[sel.selectedIndex].value);
-                            currTeam = name;
-                            console.log(currTeam);
-                        });
-                        ///Selecter
-
-
-function getRivals(data) {
-
-    var graph = {
-        nodes:[
-
-        ],
-        links:[]
-    };
-
-
-var linkIdx = 0;
-    for(team in teamNames){
-        //Go through each team
-        //create a node for each tea
-        graph.nodes[team] = {"name":teamNames[team],"group":1};
-
-//        for(var key in graph.nodes){
-//            console.log(graph.nodes[key].name === teamNames[team]);
-//        }
-//        console.log( Object.keys(graph.nodes));
-
-        for(team2 in teamNames){
-            if(teamNames[team] !== teamNames[team2]){
-
-                var teamWinLossLink = [];
-                var year = +2008;
-                var winCount = 0;
-                var lossCount = 0;
-
-                for (var i = 5; i >= 0; i--) {
-                    var season = data["seasons"][0][year];
-//                    console.log(year);
-                    for (var x = season.length - 1; x >= 0; x--) {
-
-
-                        if (season[x].winner === teamNames[team] && season[x].loser === teamNames[team2]) {
-
-//                            console.log("MATcHED WIN");
-//                            console.log("Winner"+""+season[x].winner + " Loser "+ season[x].loser);
-                            winCount += 1;
-//                            console.log("Wincount"+winCount)
-                        }
-                        else if (season[x].winner === teamNames[team2] && season[x].loser === teamNames[team]) {
-
-//                            console.log("MATcHED LOSS");
-//                            console.log("Winner"+""+season[x].winner + " Loser "+ season[x].loser);
-                            lossCount += 1;
-//                            console.log("Losscount"+lossCount)
-                        }
-                    }
-                    year += 1;
+                }
+//            console.log("TEam 1" + teamNames[team] +" Team 2"+teamNames[team2]);
+//            console.log("Wincount"+winCount)
+//            console.log("Losscount"+lossCount)
+                if (lossCount === 0) {
+                    var linkStrength = winCount / (winCount + lossCount);
+                } else {
+                    var linkStrength = lossCount / (winCount + lossCount);
                 }
 
-            }
-            else{
-                console.log("SAME SHIT DIFFERNET DAY")
+                console.log(team!==team2);
+                if (team !== team2) {
+
+                    if(linkStrength < 0.5){
+                        linkStrength = Math.round(((linkStrength*10)*3));
+                    }
+                    else{
+                        linkStrength =Math.round(((1-linkStrength)*10)*3) ;
+                    }
+                    console.log("linkstrength" + linkStrength);
+console.log("creating link")
+                    graph.links[linkIdx] = {"source": team, "target": team2, "value": linkStrength};
+                    linkIdx += 1;
+                }
+                winCount = 0;
+                lossCount = 0;
 
             }
-            console.log("TEam 1" + teamNames[team] +" Team 2"+teamNames[team2]);
-            console.log("Wincount"+winCount)
-            console.log("Losscount"+lossCount)
-            if (lossCount === 0) {
-                var linkStrength = winCount / (winCount + lossCount);
-            } else {
-                var linkStrength = lossCount / (winCount + lossCount);
-            }
-                    console.log("linkstrength"+linkStrength)
-
-//            if(){
-//
-//            }
-              graph.links[linkIdx] = {"source" : team, "target": team2, "value": linkStrength};
-
-            winCount = 0;
-            lossCount = 0;
-            linkIdx+=1;
-
-
         }
-
-
-
-
-
-        //for each other team
-        //count up the number of games
-        //calculate the winloss
-        //theres a link to each other team
-        //the value for the link is the ratio of win/loss
-
-
-
+        console.log("Helo");
+//        var graphJson = JSON.stringify(graph);
+//        graph = JSON.parse(graphJson);
+        return graph;
 
     }
-    console.log("Helo");
+});
+//END MAIN
 
-var graphJson = JSON.stringify(graph);
-
-    console.log("Helo");
-
-
-
-
-
-
-
-
-
-
-return graphJson;
-
+function getIndex(name) {
+    return teamNames.indexOf(name);
 }
-                    });
-                    //END MAIN
-
-                    function getIndex(name) {
-                        return teamNames.indexOf(name);
-                    }
 
 
-                </script>
-            </td>
-            <td>
-                <div id="gamesDiv">
-                </div>
-            </td>
-        </tr>
-    </table>
+</script>
+</td>
+<td>
+    <div id="gamesDiv">
+    </div>
+</td>
+</tr>
+</table>
 </div>
 </body>
 </html>

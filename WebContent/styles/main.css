@@ -176,3 +176,16 @@ text-align: center;
 .subunits2.NZN{fill:#009DDD;}
 .subunits2.NZS{fill:#009DDD;}
 .subunits2.AUS{fill:#FF1493;}
+
+
+
+.node {
+    stroke: #fff;
+    stroke-width: 1.5px;
+}
+
+.link {
+    stroke: #999;
+    stroke-opacity: .6;
+}
+
