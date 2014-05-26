@@ -162,7 +162,7 @@ text-align: center;
 .sexyMainDiv{
     border-radius: 10px;
     opacity: 1;
-    background-color: #BEBEBE;
+    /*background-color: #BEBEBE;*/
     margin: 10px 5px 10px 5px;
     position: relative;
     width: 100%;
@@ -186,6 +186,6 @@ text-align: center;
 
 .link {
     stroke: #999;
-    stroke-opacity: .6;
+    stroke-opacity: 1;
 }
 

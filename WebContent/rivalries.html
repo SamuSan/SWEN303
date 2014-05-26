@@ -145,12 +145,12 @@ var teamColors = [
 var svg = d3.select("#barSvgCell")
         .append("svg")
         .attr("width", width)
-        .attr("height", height)
-        .attr("transform", "translate(100,50)");
+        .attr("height", height);
+        // .attr("transform", "translate(100,50)");
 var forceContainer = svg.append("g");
 var force = d3.layout.force()
-        .charge(-300)
-        .linkDistance(300)
+        .charge(-500)
+        .linkDistance(500)
         .size([width, height]);
 var color = d3.scale.category20();
 
@@ -168,14 +168,20 @@ force.nodes(forceGraphData.nodes)
         .links(forceGraphData.links)
         .start();
 
-var link =  svg.selectAll(".link")
+var link =  svg.selectAll("line")
         .data(forceGraphData.links)
         .enter()
-        .append("link")
+        .append("line")
         .attr("class","link")
+        .attr("x1", function(d) { return d.source.x; })
+            .attr("y1", function(d) { return d.source.y; })
+            .attr("x2", function(d) { return d.target.x; })
+            .attr("y2", function(d) { return d.target.y; })
         .style("stroke-width", function(d){
+            console.log(d.value);
             return d.value+1;
-        });
+        })
+        .style("stroke","#FFFFFF");
 
     var node = svg.selectAll(".node")
             .data(forceGraphData.nodes)
@@ -184,15 +190,17 @@ var link =  svg.selectAll(".link")
                 var clazz = stripSpaces(d.name,"Circle");
                 return clazz;
             })
-            .attr("r", 20)
+            .attr("r", 20).call(force.drag);
 //            .style("fill", function(d) { return color(d.group); })
-            .call(force.drag);
+          
 
     node.append("title")
             .text(function(d) { return d.name; });
 
     force.on("tick", function() {
-        link.attr("x1", function(d) { return d.source.x; })
+        link.attr("x1", function(d) { 
+console.log(d.source.x);
+            return d.source.x; })
                 .attr("y1", function(d) { return d.source.y; })
                 .attr("x2", function(d) { return d.target.x; })
                 .attr("y2", function(d) { return d.target.y; });
@@ -271,8 +279,8 @@ var link =  svg.selectAll(".link")
                     else{
                         linkStrength =Math.round(((1-linkStrength)*10)*3) ;
                     }
-                    console.log("linkstrength" + linkStrength);
-console.log("creating link")
+                    // console.log("linkstrength" + linkStrength);
+// console.log("creating link")
                     graph.links[linkIdx] = {"source": team, "target": team2, "value": linkStrength};
                     linkIdx += 1;
                 }
@@ -281,7 +289,7 @@ console.log("creating link")
 
             }
         }
-        console.log("Helo");
+        // console.log("Helo");
 //        var graphJson = JSON.stringify(graph);
 //        graph = JSON.parse(graphJson);
         return graph;
