@@ -27,3 +27,7 @@ function stripSpaces(str, classType){
 }
 
 
+function stripQuotes(str) {
+    var s = str.replace(/\"/g, '');
+    return s;
+}

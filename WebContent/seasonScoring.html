@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>dc.js - Series Example</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../styles/dc.css"/>
+</head>
+<body>
+
+<div id="test"></div>
+<!-- <button onclick="button1()">1</button>
+<button onclick="button2()">2</button>
+<button onclick="button3()">3</button> -->
+
+<script type="text/javascript" src="../js/d3.js"></script>
+<script type="text/javascript" src="../js/crossfilter.js"></script>
+<script type="text/javascript" src="../js/PMSI/dist/dimple.v2.0.0.min.js"></script>
+<div id="chartContainer"></div>
+<script type="text/javascript">
+
+
+          d3.json("data/allSeasonFixer.json", function(netBallData){
+
+data = netBallData.seasons[0]["2008"];
+
+        var svg = dimple.newSvg("#chartContainer", 590, 500);
+
+
+
+    // "round":1,
+    // "date":"Saturday 5 April",
+    // "homeTeam":"Central Pulse",
+    // "awayTeam":"Melbourne Vixens",
+    // "winner":"Melbourne Vixens",
+    // "winnerScore":50,
+    // "loser":"Central Pulse",
+    // "loserScore":33,
+    // "score":"33 50",
+    // "venue":"TSB Bank Arena, Wellington"
+    // The default data set for these examples has regular times
+    // and the point of this demo is to show the time axis
+    // functionality, therefore a small bespoke data set is used.
+    // data.forEach(function (d) {
+    //     d["date"] = d["date"].substring(0, d["date"].length - 6);
+    // }, this);
+    // Create the chart as usual
+    var myChart = new dimple.chart(svg, data);
+    myChart.setBounds(70, 40, 490, 320)
+    
+    // Add the x axis reading dates in the format 01 Jan 2012
+    // // and displaying them 01 Jan
+    var x = myChart.addTimeAxis("x", "date");
+
+    // // Add the y axis reading dates and times but only outputting
+    // // times.  
+    var y = myChart.addMeasureAxis("y", "round");
+
+    // Size the bubbles by volume
+    var z = myChart.addMeasureAxis("z", "winnerScore");
+    
+    // // Setting min and max dates requires them to be set
+    // // as actual javascript date objects
+    x.overrideMin = new Date("2008-01-01");
+    x.overrideMax = new Date("2013-12-31");
+    y.overrideMin = (1);
+    y.overrideMax = (17);
+
+    // // Show a label for every 4 weeks.
+    x.timePeriod = d3.time.weeks;
+    x.timeInterval = 4;
+
+    // Control bubble sizes by setting the max and min values    
+    z.overrideMin = 0;
+    z.overrideMax = 60;
+
+    // Add the bubble series for shift values first so that it is
+    // drawn behind the lines
+    // myChart.addSeries("loserScore", dimple.plot.bubble);
+
+    // Add the line series on top of the bubbles.  The bubbles
+    // and line points will naturally fall in the same places
+   var s = myChart.addSeries("loserScore", dimple.plot.line);
+
+    // Add line markers to the line because it looks nice
+    s.lineMarkers = true;
+
+    // Show a legend
+    myChart.addLegend(180, 10, 360, 20, "right");
+
+    // Draw everything
+    myChart.draw();
+
+
+          });
+
+
+
+</script>
+
+</body>
+</html>

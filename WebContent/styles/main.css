@@ -118,7 +118,7 @@ td{
 }
 body {
     font-family: Verdana,Arial,sans-serif;
-    background-color: #ffffff;
+    background-color: #d3d3d3;
     height: 100%;
 }
 
@@ -133,6 +133,7 @@ h2 {
     margin-right: auto;
     margin-top: 30px;
     margin-bottom: 10px;
+    background-color: #d3d3d7;
 }
 
 .wrapper > div {
@@ -188,4 +189,16 @@ text-align: center;
     stroke: #999;
     stroke-opacity: 1;
 }
-
+.pointsBySeason{
+	fill:#000000 ;
+	opacity: .1;
+}
+.teamSel{
+	margin-top: 20px;
+	margin-left: 200px;
+	background-color: #d3d3d3;	
+}
+.placingsSeason{
+		fill:#000000 ;
+	opacity: .1;
+}
