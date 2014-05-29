@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head>
+
+    <link rel="stylesheet" href="styles/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="styles/main.css">
+
+
+</head>
+<body>
+
+<div id="chartContainer">
+    <script src="js/PMSI/lib/d3.v3.min.js"></script>
+    <script src="js/PMSI/dist/dimple.v2.0.0.js"></script>
+    <script type="text/javascript">
+        var svg = dimple.newSvg("#chartContainer", 590, 400);
+        var currTeam = "Melbourne Vixens";
+        var currYear = 2008;
+        d3.json("data/allSeasonFixer.json", function (data) {
+//      data = dimple.filterData(data.seasons["2008"], "winner", ["Melbourne Vixens"]);
+
+            dataSet = data.seasons[currYear];
+            dataSet = dataSet.filter(function (d) {
+                return d.winner === currTeam || d.loser === currTeam;
+            });
+            console.log(dataSet);
+            var myChart = new dimple.chart(svg, dataSet);
+
+            myChart.setBounds(60, 30, 505, 305);
+
+            var x = myChart.addCategoryAxis("x", "Month");
+            x.addOrderRule("Date");
+            myChart.addMeasureAxis("y", "Points");
+            var s = myChart.addSeries("winnerScore", dimple.plot.line);
+            var t = myChart.addSeries("loserScore", dimple.plot.line);
+            s.interpolation = "cardinal";
+            t.interpolation = "cardinal";
+            myChart.addLegend(60, 10, 500, 20, "right");
+            myChart.draw();
+        });
+    </script>
+</div>
+
+</body>
+</html>

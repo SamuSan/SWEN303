@@ -20,8 +20,8 @@
 
 
           d3.json("data/allSeasonFixer.json", function(netBallData){
-
-data = netBallData.seasons[0]["2008"];
+console.log(netBallData);
+data = netBallData.seasons["2008"];
 
         var svg = dimple.newSvg("#chartContainer", 590, 500);
 

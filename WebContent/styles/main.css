@@ -17,8 +17,8 @@ height: 100%;
 }
 							/*CENTRAL PULSE*/
 .CentralPulseCircle{
-	fill:#FFFF00;/* Yellow */
-	stroke:#1560BD;/* Blue */
+	stroke:#FFFF00;/* Yellow */
+	fill:#1560BD;/* Blue */
 }
 							/*CANTERBURY TACTIX*/
 .CanterburyTactixCircle{
@@ -201,4 +201,19 @@ text-align: center;
 .placingsSeason{
 		fill:#000000 ;
 	opacity: .1;
+}
+.pointBack{
+    fill:#d3d3d3;
+
+}
+.axisStyle{
+    stroke-width:5;
+}
+.buttons{
+    fill:#000000 ;
+    opacity: .1;
+}
+
+.titleHeader{
+    margin-bottom: 30px;
 }
