@@ -217,3 +217,6 @@ text-align: center;
 .titleHeader{
     margin-bottom: 30px;
 }
+.compareButton{
+    fill:#d3d3d3;
+}
