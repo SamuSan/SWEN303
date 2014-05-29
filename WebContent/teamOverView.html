@@ -149,7 +149,7 @@ var streakXSchink = 30;
 var pointsWidth = 1200;
 var pointsHeight = 500;
 var placingsX = 0;
-var pointsXShink = 200;
+var pointsXShink = 230;
 var placingsY = 400;
 var pointsYSchink = 5;
 
@@ -233,6 +233,7 @@ d3.json("data/allSeasons.json", function (data) {
             .attr("x", 0)
             .attr("y", 0)
             .attr("class", "pointsBySeason");
+
     pbsBack.append("text").text("Points by Season").attr("x", pbsWidth / 3).attr("y", pbsBarHeight / 2).attr("font-size", "18px");
 
 
@@ -312,10 +313,10 @@ d3.json("data/allSeasons.json", function (data) {
             .attr("y", streakY)
             .attr("class", "placingsSeason");
     streakBack.append("text")
-            .attr("x", streakX + (streakWidth / 3))
-            .attr("y", streakY + 20)
+            .attr("x", streakX + (streakWidth / 5))
+            .attr("y", streakY + 17)
             .attr("font-size", "18px")
-            .text("Season Winning Streaks");
+            .text("Season Winning Streaks (click to change season!)");
 
     var streakAxis = d3.svg.axis().ticks([16]).tickValues([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]).orient("left").scale(streakAxisScaleVert);
     streakBack.append("g")
@@ -365,7 +366,10 @@ d3.json("data/allSeasons.json", function (data) {
                 return (streakHeight - streakScaleVert(d.Streak) + 6 );
             })
             .text(function (d) {
-                return d.Year;
+                if(d.Streak >= 1){
+                    return d.Year;
+                }
+                return "";
             })
             .attr("fill", "white");
     popLines();
@@ -489,36 +493,9 @@ d3.json("data/allSeasons.json", function (data) {
                 }
                 return  name;
             });
-
-//    var winLossLabel = pointsBack.append("g").attr("id", "winLossLabel")
-//            .selectAll("text")
-//            .append("text")
-//            .data(pointsData)
-//            .enter()
-//            .append("text")
-//            .text(function (d) {
-//                if (d.winner === currTeam) {
-//                    var y =  "W";
-//                }
-//                else {
-//                    var y = "L";
-//                }
-//                return y;
-//            })
-//            .attr("x", function (d, i) {
-//                if (d.winner === currTeam) {
-//                    var r = d.winnerScore;
-//                }
-//                else {
-//                    var r = d.loserScore;
-//                }
-//
-//                return pointsRoundScale(i) + 92;
-//            })
-//            .attr("y", function (d) {
-//                return 150 + (height - pointsHeight/2)+5;
-//            })
-//            .attr("fill", "black");
+    //WIN AND LOSS LABEL
+    pointsBack.append("text").attr("font-size",fontSize).attr("x", 0).attr("y",110 + (height - pointsHeight / 2)).text("Winner");
+    pointsBack.append("text").attr("font-size",fontSize).attr("x", 0).attr("y",210 + (height - pointsHeight / 2)).text("Loser");
 //HOME TEAM END
     var pointsBackOppo = svg.append("g");
     //OPPOSITION TEAM BEGING
@@ -913,7 +890,10 @@ d3.json("data/allSeasons.json", function (data) {
                     return (streakHeight - streakScaleVert(d.Streak) + 6 );
                 })
                 .text(function (d) {
-                    return d.Year;
+                    if(d.Streak >= 1){
+                        return d.Year;
+                    }
+                    return "";
                 })
                 .attr("fill", "white");
 //CHANGE POINTS
