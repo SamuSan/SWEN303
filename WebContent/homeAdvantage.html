@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head>
+
+    <!--<link rel="stylesheet" href="styles/bootstrap/dist/css/bootstrap.css">-->
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/d3.slider.css">
+
+
+</head>
+
+<body>
+<script type="text/javascript" src="d3/d3.min.js"></script>
+<!--<script type="text/javascript" src="node_modules/topojson/topojson.min.js"></script>-->
+<script type="text/javascript" src="js/d3slider/d3.slider.js"></script>
+<script type="text/javascript" src="d3Functions.js"></script>
+
+<div class="wrapper">
+    <header>Seasons</header>
+</div>
+<div id="seasonSlider" class="wrapper">
+
+
+</div>
+
+<script type="text/javascript">
+var teamColors = [
+    {
+        AdelaideThunderbirdsRect: [
+            {'fill1': '#FF1493' /* Pink */, 'fill2': '#FFFFF1'/* White */}
+        ]
+
+    },
+    {
+        CentralPulseRect: [
+            {
+                "fill1": "#FFFF00", /* Yellow */
+                "fill2": "#1560BD" /* Blue */
+            }
+        ]
+    }
+    ,
+    {                            /*CANTERBURY TACTIX*/
+        CanterburyTactixRect: [
+            {
+                "fill1": '#FF0000', /* Red */
+                "fill2": '#000000'/* Black */
+            }
+        ]
+    },
+    {                            /* MELB VIX*/
+        MelbourneVixensRect: [
+            {
+                "fill1": '#191970', /* Dark Blue */
+                "fill2": '#008080'/* Green */
+            }
+        ]
+    },
+    {                            /*NSW SWIFTS*/
+        NewSouthWalesSwiftsRect: [
+            {
+                "fill1": '#FF0000', /*Red*/
+                "fill2": '#6495ED'/*Light Blue*/
+            }
+        ]
+    },
+    {                            /*NORTHERN MYSTICS*/
+        NorthernMysticsRect: [
+            {
+                "fill1": '#0000FF', /* Royal Blue */
+                "fill2": '#FF0000'/* Red */
+            }
+        ]
+    },
+    {                            /*QUEENSLAND FIREBIRDS*/
+        QueenslandFirebirdsRect: [
+            {
+                "fill1": '#800080', /* Purple */
+                "fill2": '#FFA500'/* Gold */
+            }
+        ]
+    },
+    {                            /*SOUTHERN STEEL*/
+        SouthernSteelRect: [
+            {
+                "fill1": '#00B7EB', /* Light Blue*/
+                "fill2": '#000000'/*Black*/
+            }
+        ]
+    },
+    {                            /*WAIKATO BAY OF PLENTY MAGIC*/
+        WaikatoBayofPlentyMagicRect: [
+            {
+                "fill1": '#000000', /* Black */
+                "fill2": '#FF4500'/* Orange */
+            }
+        ]
+    },
+    {                            /*WESTCOST FEVER*/
+        WestCoastFeverRect: [
+            {
+                "fill1": '#000000', /* Black */
+                "fill2": '#32CD32'/* Bright Ugly Green*/
+            }
+        ]}
+];
+var teamNamesCountry = {
+    "Adelaide Thunderbirds": "AUS",
+    "Central Pulse": "NZ",
+    "Canterbury Tactix": "NZ",
+    "Melbourne Vixens": "AUS",
+    "New South Wales Swifts": "AUS",
+    "Northern Mystics": "NZ",
+    "Queensland Firebirds": "AUS",
+    "Southern Steel": "NZ",
+    "Waikato Bay of Plenty Magic": "NZ",
+    "West Coast Fever": "AUS"
+};
+
+var teamVenuesCountry = {
+    "Netball SA Stadium, Adelaide": "AUS",
+    "TSB Bank Arena, Wellington": "NZ",
+    "CBS Canterbury Arena, Christchurch": "NZ",
+    "Hisense Arena, Melbourne": "AUS",
+    "Sydney Olympic Park Sports Centre": "AUS",
+    "Trusts Stadium, Auckland": "NZ",
+    "Brisbane Convention and Exhibition Centre": "AUS",
+    "Gold Coast Convention and Exhibition Centre": "AUS",
+    "Lion Foundation Arena, Dunedin": "NZ",
+    "Claudelands Arena, Hamilton": "NZ",
+    "Challenge Stadium, Perth": "AUS",
+    "Mystery Creek Events Centre, Hamilton": "NZ",
+    "Stadium Southland, Invercargill": "NZ",
+    "State Netball and Hockey Centre, Melbourne": "AUS",
+    "North Shore Events Centre, Auckland": "NZ",
+    "Queen Elizabeth Youth Centre, Tauranga": "NZ",
+    "ETSA Park, Adelaide": "AUS",
+    "Acer Arena, Sydney": "AUS",
+    "Vodafone Arena, Melbourne": "AUS",
+    "State Sports Centre, Sydney": "AUS",
+    "Taupo Events Centre": "NZ",
+    "ASB Baypark Arena, Tauranga": "NZ",
+    "Trafalgar Centre, Nelson": "NZ",
+    "Rod Laver Arena, Melbourne": "NZ",
+    "Invercargill ILT Velodrome": "NZ",
+    "Te Rauparaha, Porirua": "NZ",
+    "State Netball and Hockey Centre,Melbourne": "AUS",
+    "Te Rauparaha Arena, Porirua": "NZ",
+    "Edgar Centre, Dunedin": "NZ",
+    "Energy Events Centre, Rotorua": "NZ",
+    "Adelaide Entertainment Centre": "AUS",
+    "Newcastle Entertainment Centre": "AUS",
+    "Vector Arena, Auckland": "NZ",
+    "Westpac Arena, Christchurch": "NZ",
+    "Stadium Southland Velodrome,Invercargill": "NZ",
+    "Brisbane Convention & Exhibition Centre": "AUS",
+    "Westpac Centre, Christchurch": "NZ",
+    "Energy Events Centre, Rotorua*": "NZ",
+    "Arena Manawatu, Palmerston North": "NZ",
+    "Adelaide Arena, Adelaide": "AUS",
+    "Mystery Creek Events Centre,Hamilton": "NZ",
+    "Pettigrew Green Arena, Napier": "NZ",
+    "The Edgar Centre, Dunedin": "NZ",
+    "Pettigrew Green Arena, Napier": "NZ",
+    "Allphones Arena, Sydney": "AUS",
+    "TECT Arena, Tauranga": "NZ",
+    "Perth Arena, Perth": "AUS",
+    "Claudelands Arena, Waikato": "NZ",
+    "State Netball Hockey Centre, Melbourne": "AUS",
+    "Adelaide Entertainment Centre, Adelaide": "AUS"
+
+
+};
+
+var teamNames = [
+    "Adelaide Thunderbirds",
+    "Central Pulse" ,
+    "Canterbury Tactix",
+    "Melbourne Vixens",
+    "New South Wales Swifts",
+    "Northern Mystics",
+    "Queensland Firebirds",
+    "Southern Steel",
+    "Waikato Bay of Plenty Magic",
+    "West Coast Fever"
+];
+
+var width = 2000;
+var height = 700;
+var rectHeight = 30;
+var rectWidth = 50;
+var padding = 400;
+var buffer = 30;
+var currRound = 1;
+var currSeason = 2008;
+var svg = d3.select("body")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .attr("transform", "translate(" + 400 + "," + 30 + ")");
+
+var teamContainer = svg.append("g");
+var txtContainer = svg.append("g");
+var backLines = svg.append("g");
+var yScale = d3.scale.linear()
+        .domain([0, 34])
+        .range([height - 50, 10]);
+var pointsAxis = d3.svg.axis()
+        .orient("left").ticks(34)
+        .scale(yScale);
+var lines = [];
+function popLines() {
+    for (var x = 0; x < 34; x++) {
+        lines.push(+x + 1);
+    }
+}
+var color = d3.scale.ordinal()
+        .range(["#001c9c","#101b4d","#475003","#9c8305","#d3c47c"]);
+//Begin Main Function
+d3.json("data/allSeasonFixer.json", function (data) {
+
+var allTimeData = ausVsNzPercentWinsAllTime();
+
+    for(var i =0; i<allTimeData.length;i++){
+        console.log(allTimeData[i]["NZ"]);
+        console.log(allTimeData[i]["AUS"]);
+        console.log(allTimeData[i]["SeasonRound"]);
+    }
+
+
+
+var labelVar = "SeasonRound";
+        var varNames = d3.keys(allTimeData[0]).filter(function(key){
+    return key !== labelVar;
+});
+
+
+color.domain(varNames);
+
+
+
+var seriesData = varNames.map(function (name) { //D
+    return {
+        name: name,
+        values: allTimeData.map(function (d) {
+            return {name: name, label: d[labelVar], value: +d[name]};
+        })
+    };
+});
+console.log("SeriesData", seriesData);
+
+
+
+
+
+    function ausVsNzPercentWinsAllTime() {
+        var results = [];
+
+        var nzHomeGamesTotal = 0;
+        var nzHomeWinsTotal = 0;
+
+        var ausHomeGamesTotal = 0;
+        var ausHomeWinsTotal = 0;
+        for (var x = 2008; x < 2014; x++) {
+
+            var seas = data.seasons[x];
+
+            for (var e = 1; e <= 17; e++) {
+                console.log("Season" + x + "" + "Round = " + e);
+                var NZHomeGames = seas.filter(function (d) {
+                    return d.round === e && teamNamesCountry[d.homeTeam] == "NZ" && teamNamesCountry[d.awayTeam] == "AUS";
+                });
+                nzHomeGamesTotal += NZHomeGames.length;
+
+                var NZHomeGameWins = NZHomeGames.filter(function (d) {
+                    return  teamNamesCountry[d.winner] == "NZ";
+                });
+                nzHomeWinsTotal += NZHomeGameWins.length;
+
+
+                var AUSHomeGames = seas.filter(function (d) {
+                    return d.round === e && teamNamesCountry[d.homeTeam] == "AUS" && teamNamesCountry[d.awayTeam] == "NZ";
+                });
+                ausHomeGamesTotal += AUSHomeGames.length;
+
+                var AUSHomeGameWins = AUSHomeGames.filter(function (d) {
+                    return  teamNamesCountry[d.winner] == "AUS";
+                });
+                ausHomeWinsTotal += AUSHomeGameWins.length;
+
+
+                var homeAwayAllTime = {"NZ": ""+(nzHomeWinsTotal / nzHomeGamesTotal)+"",
+                    "AUS": ""+(ausHomeWinsTotal / ausHomeGamesTotal)+"", "SeasonRound": "" + x + "R" + e + ""};
+    //            homeAwayAllTime["NZ"]=(nzHomeWinsTotal / nzHomeGamesTotal);
+    //            homeAwayAllTime["AUS"]=(ausHomeWinsTotal / ausHomeGamesTotal);
+    //            homeAwayAllTime["SeasonRound"]=""+x+"_R"+e+"";
+    //            json.stringify(homeAwayAllTime);
+                results.push(homeAwayAllTime);
+            }
+        }
+        return results;
+    }
+
+
+});
+//End Main Function
+
+
+</script>
+<div id="roundSlider" class="wrapper">
+
+
+</div>
+<footer class="wrapper">Rounds</footer>
+</body>
+</html>
