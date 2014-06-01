@@ -15,96 +15,139 @@
 <!--<script type="text/javascript" src="node_modules/topojson/topojson.min.js"></script>-->
 <script type="text/javascript" src="js/d3slider/d3.slider.js"></script>
 <script type="text/javascript" src="d3Functions.js"></script>
-
-<div class="wrapper">
-    <header>Seasons</header>
-</div>
-<div id="seasonSlider" class="wrapper">
-
-
-</div>
-
+<script type="text/javascript" src="js/numeral/numeral.js"></script>
+<script src="js/jquery-2.1.1.min.js"></script>
+<script src="styles/bootstrap/dist/js/bootstrap.js"></script>
+<script src="http://w3resource.com/twitter-bootstrap/twitter-bootstrap-v2/js/bootstrap-tooltip.js"></script>
+<script src="http://w3resource.com/twitter-bootstrap/twitter-bootstrap-v2/js/bootstrap-popover.js"></script>
 <script type="text/javascript">
-var teamColors = [
-    {
-        AdelaideThunderbirdsRect: [
-            {'fill1': '#FF1493' /* Pink */, 'fill2': '#FFFFF1'/* White */}
-        ]
+//var teamColors = [
+//    {
+//        AdelaideThunderbirdsRect: [
+//            {'fill1': '#FF1493' /* Pink */, 'fill2': '#FFFFF1'/* White */}
+//        ]
+//
+//    },
+//    {
+//        CentralPulseRect: [
+//            {
+//                "fill1": "#FFFF00", /* Yellow */
+//                "fill2": "#1560BD" /* Blue */
+//            }
+//        ]
+//    }
+//    ,
+//    {                            /*CANTERBURY TACTIX*/
+//        CanterburyTactixRect: [
+//            {
+//                "fill1": '#FF0000', /* Red */
+//                "fill2": '#000000'/* Black */
+//            }
+//        ]
+//    },
+//    {                            /* MELB VIX*/
+//        MelbourneVixensRect: [
+//            {
+//                "fill1": '#191970', /* Dark Blue */
+//                "fill2": '#008080'/* Green */
+//            }
+//        ]
+//    },
+//    {                            /*NSW SWIFTS*/
+//        NewSouthWalesSwiftsRect: [
+//            {
+//                "fill1": '#FF0000', /*Red*/
+//                "fill2": '#6495ED'/*Light Blue*/
+//            }
+//        ]
+//    },
+//    {                            /*NORTHERN MYSTICS*/
+//        NorthernMysticsRect: [
+//            {
+//                "fill1": '#0000FF', /* Royal Blue */
+//                "fill2": '#FF0000'/* Red */
+//            }
+//        ]
+//    },
+//    {                            /*QUEENSLAND FIREBIRDS*/
+//        QueenslandFirebirdsRect: [
+//            {
+//                "fill1": '#800080', /* Purple */
+//                "fill2": '#FFA500'/* Gold */
+//            }
+//        ]
+//    },
+//    {                            /*SOUTHERN STEEL*/
+//        SouthernSteelRect: [
+//            {
+//                "fill1": '#00B7EB', /* Light Blue*/
+//                "fill2": '#000000'/*Black*/
+//            }
+//        ]
+//    },
+//    {                            /*WAIKATO BAY OF PLENTY MAGIC*/
+//        WaikatoBayofPlentyMagicRect: [
+//            {
+//                "fill1": '#000000', /* Black */
+//                "fill2": '#FF4500'/* Orange */
+//            }
+//        ]
+//    },
+//    {                            /*WESTCOST FEVER*/
+//        WestCoastFeverRect: [
+//            {
+//                "fill1": '#000000', /* Black */
+//                "fill2": '#32CD32'/* Bright Ugly Green*/
+//            }
+//        ]}
+//];
+var teamColors =
+        {
+            AdelaideThunderbirdsRect: '#FF1493', /* Pink */
 
-    },
-    {
-        CentralPulseRect: [
-            {
-                "fill1": "#FFFF00", /* Yellow */
-                "fill2": "#1560BD" /* Blue */
-            }
-        ]
-    }
-    ,
-    {                            /*CANTERBURY TACTIX*/
-        CanterburyTactixRect: [
-            {
-                "fill1": '#FF0000', /* Red */
-                "fill2": '#000000'/* Black */
-            }
-        ]
-    },
-    {                            /* MELB VIX*/
-        MelbourneVixensRect: [
-            {
-                "fill1": '#191970', /* Dark Blue */
-                "fill2": '#008080'/* Green */
-            }
-        ]
-    },
-    {                            /*NSW SWIFTS*/
-        NewSouthWalesSwiftsRect: [
-            {
-                "fill1": '#FF0000', /*Red*/
-                "fill2": '#6495ED'/*Light Blue*/
-            }
-        ]
-    },
-    {                            /*NORTHERN MYSTICS*/
-        NorthernMysticsRect: [
-            {
-                "fill1": '#0000FF', /* Royal Blue */
-                "fill2": '#FF0000'/* Red */
-            }
-        ]
-    },
-    {                            /*QUEENSLAND FIREBIRDS*/
-        QueenslandFirebirdsRect: [
-            {
-                "fill1": '#800080', /* Purple */
-                "fill2": '#FFA500'/* Gold */
-            }
-        ]
-    },
-    {                            /*SOUTHERN STEEL*/
-        SouthernSteelRect: [
-            {
-                "fill1": '#00B7EB', /* Light Blue*/
-                "fill2": '#000000'/*Black*/
-            }
-        ]
-    },
-    {                            /*WAIKATO BAY OF PLENTY MAGIC*/
-        WaikatoBayofPlentyMagicRect: [
-            {
-                "fill1": '#000000', /* Black */
-                "fill2": '#FF4500'/* Orange */
-            }
-        ]
-    },
-    {                            /*WESTCOST FEVER*/
-        WestCoastFeverRect: [
-            {
-                "fill1": '#000000', /* Black */
-                "fill2": '#32CD32'/* Bright Ugly Green*/
-            }
-        ]}
-];
+
+
+
+            CentralPulseRect: "#1560BD", /* Blue */
+
+
+            /*CANTERBURY TACTIX*/
+            CanterburyTactixRect: '#FF0000', /* Red */
+            /* MELB VIX*/
+            MelbourneVixensRect: '#008080', /* Green */
+
+            /*NSW SWIFTS*/
+        NewSouthWalesSwiftsRect:
+
+
+            '#6495ED',/*Light Blue*/
+            /*NORTHERN MYSTICS*/
+        NorthernMysticsRect:
+//
+ '#0000FF', /* Royal Blue */
+
+            /*QUEENSLAND FIREBIRDS*/
+        QueenslandFirebirdsRect:
+
+'#800080', /* Purple */
+
+            /*SOUTHERN STEEL*/
+        SouthernSteelRect:
+
+
+ '#000000',/*Black*/
+            /*WAIKATO BAY OF PLENTY MAGIC*/
+        WaikatoBayofPlentyMagicRect:
+
+ /* Black */
+ '#FF4500',/* Orange */
+            /*WESTCOST FEVER*/
+        WestCoastFeverRect:
+
+ /* Black */
+'#32CD32'/* Bright Ugly Green*/
+        }
+;
 var teamNamesCountry = {
     "Adelaide Thunderbirds": "AUS",
     "Central Pulse": "NZ",
@@ -186,72 +229,195 @@ var teamNames = [
     "West Coast Fever"
 ];
 
-var width = 2000;
-var height = 700;
+//var width = 2000;
+//var height = 700;
 var rectHeight = 30;
 var rectWidth = 50;
 var padding = 400;
 var buffer = 30;
 var currRound = 1;
 var currSeason = 2008;
-var svg = d3.select("body")
-        .append("svg")
-        .attr("width", width)
-        .attr("height", height)
-        .attr("transform", "translate(" + 400 + "," + 30 + ")");
 
-var teamContainer = svg.append("g");
-var txtContainer = svg.append("g");
-var backLines = svg.append("g");
-var yScale = d3.scale.linear()
-        .domain([0, 34])
-        .range([height - 50, 10]);
-var pointsAxis = d3.svg.axis()
-        .orient("left").ticks(34)
-        .scale(yScale);
-var lines = [];
-function popLines() {
-    for (var x = 0; x < 34; x++) {
-        lines.push(+x + 1);
-    }
-}
 var color = d3.scale.ordinal()
-        .range(["#001c9c","#101b4d","#475003","#9c8305","#d3c47c"]);
+        .range(["#001c9c", "#101b4d", "#475003", "#9c8305", "#d3c47c"]);
+
+var margin = {top: 20, right: 200, bottom: 100, left: 40},
+        width = 1500 - margin.left - margin.right,
+        height = 700 - margin.top - margin.bottom;
+var x = d3.scale.ordinal()
+        .rangeRoundBands([0, width], 0);
+
+var y = d3.scale.linear()
+        .rangeRound([height, 0]);
+var xAxis = d3.svg.axis()
+//        .tickValues([2008, 2013])
+//        .ticks(6)
+        .scale(x)
+        .orient("bottom");
+
+var yAxis = d3.svg.axis()
+        .scale(y)
+        .orient("left");
+var line = d3.svg.line()
+        .interpolate("cardinal")
+        .x(function (d) {
+            return x(d.label) + x.rangeBand() / 2;
+        })
+        .y(function (d) {
+            return y(d.value);
+        });
+
+var svg = d3.select("body").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+///////////////////////////////////////////////////////////////////
 //Begin Main Function
 d3.json("data/allSeasonFixer.json", function (data) {
 
-var allTimeData = ausVsNzPercentWinsAllTime();
+    var allTimeData = teamsWinsAllTime();
+//console.log(teamTrends);
+//    var allTimeData = ausVsNzPercentWinsAllTime();
 
-    for(var i =0; i<allTimeData.length;i++){
-        console.log(allTimeData[i]["NZ"]);
-        console.log(allTimeData[i]["AUS"]);
-        console.log(allTimeData[i]["SeasonRound"]);
-    }
-
-
-
-var labelVar = "SeasonRound";
-        var varNames = d3.keys(allTimeData[0]).filter(function(key){
-    return key !== labelVar;
-});
+    var labelVar = "SeasonRound";
+    var varNames = d3.keys(allTimeData[0]).filter(function (key) {
+        return key !== labelVar;
+    });
 
 
-color.domain(varNames);
+    color.domain(varNames);
 
 
+    var seriesData = varNames.map(function (name) { //D
+        return {
+            name: name,
+            values: allTimeData.map(function (d) {
+                return {name: name, label: d[labelVar], value: +d[name]};
+            })
+        };
+    });
+    console.log("SeriesData", seriesData);
 
-var seriesData = varNames.map(function (name) { //D
-    return {
-        name: name,
-        values: allTimeData.map(function (d) {
-            return {name: name, label: d[labelVar], value: +d[name]};
+    x.domain(allTimeData.map(function (d) {
+        return d.SeasonRound;
+    })); //E
+    y.domain([
+        d3.min(seriesData, function (c) {
+            return 0;
+        }),
+        d3.max(seriesData, function (c) {
+            return d3.max(c.values, function (d) {
+                return d.value;
+            });
         })
-    };
-});
-console.log("SeriesData", seriesData);
+    ]);
 
 
+    svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis)
+            .selectAll("text")
+            .attr("font-size", "20px")
+            .style("text-anchor", "end")
+            .attr("dx", "-.8em")
+            .attr("dy", ".15em")
+            .attr("transform", function (d) {
+                return "rotate(-65)"
+            });
 
+    svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis)
+            .append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", 6)
+            .attr("dy", ".71em")
+            .style("text-anchor", "end")
+            .text("Win Percentage");
+
+
+    var series = svg.selectAll(".series")
+            .data(seriesData)
+            .enter().append("g")
+            .attr("class", "series");
+
+    series.append("path")
+            .attr("class", "line")
+            .attr("d", function (d) {
+                return line(d.values);
+            })
+            .style("stroke", function (d) {
+                console.log(d.name);
+                var name = stripSpaces(d.name,"Rect")
+                console.log(name);
+                var strokeCol = teamColors[name];
+                console.log(strokeCol);
+                return strokeCol;
+            })
+            .style("stroke-width", "4px")
+            .style("fill", "none");
+
+
+    series.selectAll(".point")
+            .data(function (d) {
+                return d.values;
+            })
+            .enter().append("circle")
+            .attr("class", "point")
+            .attr("cx", function (d) {
+                return x(d.label) + x.rangeBand() / 2;
+            })
+            .attr("cy", function (d) {
+                return y(d.value);
+            })
+            .attr("r", "3px")
+            .style("fill", function (d) {
+                return color(d.name);
+            })
+            .style("stroke", "grey")
+            .style("stroke-width", "2px")
+            .on("mouseover", function (d) {
+                showPopover.call(this, d);
+            })
+            .on("mouseout", function (d) {
+                removePopovers();
+            })
+
+
+    var legend = svg.selectAll(".legend")
+            .data(varNames.slice())
+            .enter().append("g")
+            .attr("class", "legend")
+            .attr("transform", function (d, i) {
+                return "translate(150," + i * 20 + ")";
+            });
+
+    legend.append("rect")
+            .data(seriesData)
+            .attr("x", width - 10)
+            .attr("width", 10)
+            .attr("height", 10)
+            .style("fill", function(d){
+                console.log(d.name);
+                var name = stripSpaces(d.name,"Rect")
+                console.log(name);
+                var strokeCol = teamColors[name];
+                console.log(strokeCol);
+                return strokeCol;
+            })
+            .style("stroke", "grey");
+
+    legend.append("text")
+            .attr("x", width - 12)
+            .attr("y", 6)
+            .attr("dy", ".35em")
+            .style("text-anchor", "end")
+            .text(function (d) {
+                return d;
+            });
 
 
     function ausVsNzPercentWinsAllTime() {
@@ -267,9 +433,8 @@ console.log("SeriesData", seriesData);
             var seas = data.seasons[x];
 
             for (var e = 1; e <= 17; e++) {
-                console.log("Season" + x + "" + "Round = " + e);
                 var NZHomeGames = seas.filter(function (d) {
-                    return d.round === e && teamNamesCountry[d.homeTeam] == "NZ" && teamNamesCountry[d.awayTeam] == "AUS";
+                    return d.round === e && teamNamesCountry[d.homeTeam] == "NZ";// && teamNamesCountry[d.awayTeam] == "AUS";
                 });
                 nzHomeGamesTotal += NZHomeGames.length;
 
@@ -280,7 +445,7 @@ console.log("SeriesData", seriesData);
 
 
                 var AUSHomeGames = seas.filter(function (d) {
-                    return d.round === e && teamNamesCountry[d.homeTeam] == "AUS" && teamNamesCountry[d.awayTeam] == "NZ";
+                    return d.round === e && teamNamesCountry[d.homeTeam] == "AUS";// && teamNamesCountry[d.awayTeam] == "NZ";
                 });
                 ausHomeGamesTotal += AUSHomeGames.length;
 
@@ -288,30 +453,102 @@ console.log("SeriesData", seriesData);
                     return  teamNamesCountry[d.winner] == "AUS";
                 });
                 ausHomeWinsTotal += AUSHomeGameWins.length;
-
-
-                var homeAwayAllTime = {"NZ": ""+(nzHomeWinsTotal / nzHomeGamesTotal)+"",
-                    "AUS": ""+(ausHomeWinsTotal / ausHomeGamesTotal)+"", "SeasonRound": "" + x + "R" + e + ""};
-    //            homeAwayAllTime["NZ"]=(nzHomeWinsTotal / nzHomeGamesTotal);
-    //            homeAwayAllTime["AUS"]=(ausHomeWinsTotal / ausHomeGamesTotal);
-    //            homeAwayAllTime["SeasonRound"]=""+x+"_R"+e+"";
-    //            json.stringify(homeAwayAllTime);
+                var yearStr = "" + x;
+                console.log(yearStr.substr(2, yearStr.length));
+                yearStr = yearStr.substr(2, yearStr.length);
+                var homeAwayAllTime = {"NZ": "" + ((nzHomeWinsTotal / nzHomeGamesTotal)) + "",
+                    "AUS": "" + ((ausHomeWinsTotal / ausHomeGamesTotal)) + "", "SeasonRound": "" + yearStr + ":" + e + ""};
                 results.push(homeAwayAllTime);
             }
         }
         return results;
     }
 
+    function teamsWinsAllTime() {
+        var result;
+        var results = [];
+
+
+        for (var x = 2008; x < 2014; x++) {
+
+            var seas = data.seasons[x];
+
+            var teamsRecord = [];
+            for (var t = 0; t < teamNames.length; t++) {
+
+
+
+                var currTeam = teamNames[t];
+                var teamGamesTot = 0;
+                var teamWinTot = 0;
+
+
+                for (var e = 1; e <= 17; e++) {
+                    var teamGames = seas.filter(function (d) {
+                        return d.round === e && d.homeTeam == currTeam;
+                    });
+                    teamGamesTot += teamGames.length;
+                    var teamWins = teamGames.filter(function (d) {
+                        return d.winner == currTeam;
+                    });
+                    teamWinTot += teamWins.length;
+
+                }
+                teamsRecord[t] = teamWinTot/teamGamesTot;
+
+
+
+
+            }
+            var yearStr = "" + x;
+//            yearStr = yearStr.substr(2, yearStr.length);
+
+
+            result = { "Adelaide Thunderbirds": teamsRecord[0],
+                "Central Pulse": teamsRecord[1],
+                "Canterbury Tactix": teamsRecord[2],
+                "Melbourne Vixens": teamsRecord[3],
+                "New South Wales Swifts": teamsRecord[4],
+                "Northern Mystics": teamsRecord[5],
+                "Queensland Firebirds": teamsRecord[6],
+                "Southern Steel": teamsRecord[7],
+                "Waikato Bay of Plenty Magic": teamsRecord[8],
+                "West Coast Fever": teamsRecord[9],
+                "SeasonRound": yearStr + ""};
+            results.push(result);
+            result=null;
+
+        }
+
+
+        return results;
+    }
+
+    function removePopovers() {
+        $('.popover').each(function () {
+            $(this).remove();
+        });
+    }
+
+    function showPopover(d) {
+        $(this).popover({
+            title: d.name,
+            placement: 'auto top',
+            container: 'body',
+            trigger: 'manual',
+            html: true,
+            content: function () {
+                return "" + d.label +
+                        "<br/>% Home Games Won: " + numeral(d.value).format('0.00%')
+            }
+        });
+        $(this).popover('show')
+    }
 
 });
 //End Main Function
 
 
 </script>
-<div id="roundSlider" class="wrapper">
-
-
-</div>
-<footer class="wrapper">Rounds</footer>
 </body>
 </html>
