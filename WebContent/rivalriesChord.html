@@ -18,28 +18,10 @@
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script type="text/javascript" src="d3Functions.js"></script>
 <script type="text/javascript" src="js/d3slider/d3.slider.js"></script>
-<div class="sexyMainDiv">
-<select id="teamSelector" class="dropdown-menu-left">
-    <option> "Adelaide Thunderbirds"</option>
-    <option> "Melbourne Vixens"</option>
-    <option> "Central Pulse"</option>
-    <option> "Queensland Firebirds"</option>
-    <option> "Waikato Bay of Plenty Magic"</option>
-    <option> "Southern Steel"</option>
-    <option> "New South Wales Swifts"</option>
-    <option> "Northern Mystics"</option>
-    <option> "West Coast Fever"</option>
-    <option> "Canterbury Tactix"</option>
-</select>
-
-<table>
-<tr>
-<td></td>
-<td id="barSvgCell">
 <script type="text/javascript">
 
-var width = 800;
-var height = 700;
+//var width = 800;
+//var height = 700;
 
 function stripQuotes(str) {
     var s = str.replace(/\"/g, '');
@@ -57,8 +39,8 @@ var teamNames = [
     "Waikato Bay of Plenty Magic",
     "West Coast Fever"
 ];
-var currTeam = stripQuotes(document.getElementById("teamSelector").options[0].value);
-console.log("Initialised team = " + currTeam);
+//var currTeam = stripQuotes(document.getElementById("teamSelector").options[0].value);
+//console.log("Initialised team = " + currTeam);
 var offSet = 30;
 var barWidth = 80;
 var factor = 20;
@@ -142,16 +124,6 @@ var teamColors = [
             }
         ]}
 ];
-var svg = d3.select("#barSvgCell")
-        .append("svg")
-        .attr("width", width)
-        .attr("height", height);
-        // .attr("transform", "translate(100,50)");
-var forceContainer = svg.append("g");
-var force = d3.layout.force()
-        .charge(-500)
-        .linkDistance(500)
-        .size([width, height]);
 var color = d3.scale.category20();
 
 
@@ -159,89 +131,148 @@ var color = d3.scale.category20();
 
 d3.json("data/allSeasons.json", function (data) {
 
-    console.log(data);
 
-    var forceGraphData = getRivals(data);
-    //BEGIN FORCED
+var rivData = getRivals();
+    console.log(rivData);
 
-force.nodes(forceGraphData.nodes)
-        .links(forceGraphData.links)
-        .start();
 
-var link =  svg.selectAll("line")
-        .data(forceGraphData.links)
-        .enter()
-        .append("line")
-        .attr("class","link")
-        .attr("x1", function(d) { return d.source.x; })
-            .attr("y1", function(d) { return d.source.y; })
-            .attr("x2", function(d) { return d.target.x; })
-            .attr("y2", function(d) { return d.target.y; })
-        .style("stroke-width", function(d){
-            console.log(d.value);
-            return d.value+1;
-        })
-        .style("stroke","#FFFFFF");
-
-    var node = svg.selectAll(".node")
-            .data(forceGraphData.nodes)
-            .enter().append("circle")
-            .attr("class", function(d){
-                var clazz = stripSpaces(d.name,"Circle");
-                return clazz;
-            })
-            .attr("r", 20).call(force.drag);
-//            .style("fill", function(d) { return color(d.group); })
-          
-
-    node.append("title")
-            .text(function(d) { return d.name; });
-
-    force.on("tick", function() {
-        link.attr("x1", function(d) { 
-console.log(d.source.x);
-            return d.source.x; })
-                .attr("y1", function(d) { return d.source.y; })
-                .attr("x2", function(d) { return d.target.x; })
-                .attr("y2", function(d) { return d.target.y; });
-
-        node.attr("cx", function(d) { return d.x; })
-                .attr("cy", function(d) { return d.y; });
-    });
+    var matrix = [
+        [11975,  5871, 8916, 2868],
+        [ 1951, 10048, 2060, 6171],
+        [ 8010, 16145, 8090, 8045],
+        [ 1013,   990,  940, 6907]
+    ];
 
 
 
 
 
-    //END FORCED
-    console.log("Helo");
+    var chord = d3.layout.chord()
+            .padding(.05)
+            .sortSubgroups(d3.descending)
+            .matrix(rivData);
 
+    var width = 960,
+            height = 500,
+            innerRadius = Math.min(width, height) * .41,
+            outerRadius = innerRadius * 1.1;
 
-    //Selector
-    d3.select("#teamSelector").on("change", function () {
-        console.log("DOINGFUCKING CHANGE BULLSHIT");
-        var sel = document.getElementById("teamSelector");
-        var name = stripQuotes(sel.options[sel.selectedIndex].value);
-        currTeam = name;
-        console.log(currTeam);
-    });
-    ///Selecter
+    var fill = d3.scale.ordinal()
+            .domain(d3.range(4))
+            .range(["#000000", "#FFDD89", "#957244", "#F26223"]);
 
+    var svg = d3.select("body").append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .append("g")
+            .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-    function getRivals(data) {
+    svg.append("g").selectAll("path")
+            .data(chord.groups)
+            .enter().append("path")
+            .style("fill", function(d) { return fill(d.index); })
+            .style("stroke", function(d) { return fill(d.index); })
+            .attr("d", d3.svg.arc().innerRadius(innerRadius).outerRadius(outerRadius))
+            .on("mouseover", fade(.1))
+            .on("mouseout", fade(1));
 
-        var graph = {
-            nodes: [],
-            links: []
+    var ticks = svg.append("g").selectAll("g")
+            .data(chord.groups)
+            .enter().append("g").selectAll("g")
+            .data(groupTicks)
+            .enter().append("g")
+            .attr("transform", function(d) {
+                return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")"
+                        + "translate(" + outerRadius + ",0)";
+            });
+
+    ticks.append("line")
+            .attr("x1", 1)
+            .attr("y1", 0)
+            .attr("x2", 5)
+            .attr("y2", 0)
+            .style("stroke", "#000");
+
+    ticks.append("text")
+            .attr("x", 8)
+            .attr("dy", ".35em")
+            .attr("transform", function(d) { return d.angle > Math.PI ? "rotate(180)translate(-16)" : null; })
+            .style("text-anchor", function(d) {
+                console.log(d.index);
+                return d.angle > Math.PI ? "end" : null; })
+            .text(function(d) { return d.label; });
+
+    svg.append("g")
+            .attr("class", "chord")
+            .selectAll("path")
+            .data(chord.chords)
+            .enter().append("path")
+            .attr("d", d3.svg.chord().radius(innerRadius))
+            .style("fill", function(d) { return fill(d.target.index); })
+            .style("opacity", 1);
+
+// Returns an array of tick angles and labels, given a group.
+    function groupTicks(d) {
+        var k = (d.endAngle - d.startAngle) / d.value;
+        return d3.range(0, d.value, 1000).map(function(v, i) {
+            return {
+                angle: v * k + d.startAngle,
+
+                label: i % 5 ? null : v / 1000 + "k"
+            };
+        });
+    }
+
+// Returns an event handler for fading a given chord group.
+    function fade(opacity) {
+        return function(g, i) {
+            svg.selectAll(".chord path")
+                    .filter(function(d) { return d.source.index != i && d.target.index != i; })
+                    .transition()
+                    .style("opacity", opacity);
         };
+    }
 
 
-        var linkIdx = 0;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    function getRivals() {
+
+        var graph = [[],[],[],[],[],[],[],[],[],[]];
+
+
+        var idxY = 0;
+        var idxX = 0;
         for (var team in teamNames) {
-            graph.nodes[team] = {"name": teamNames[team], "group": team};
 
             for (var team2 in teamNames) {
-                if (teamNames[team] !== teamNames[team2]) {
+//                if () {
                     var year = +2008;
                     var winCount = 0;
                     var lossCount = 0;
@@ -259,39 +290,21 @@ console.log(d.source.x);
                         }
                         year += 1;
                     }
-
+                if (teamNames[team] !== teamNames[team2]) {
+                    graph[idxY][idxX] = +(winCount / (winCount + lossCount) * 100);
                 }
-//            console.log("TEam 1" + teamNames[team] +" Team 2"+teamNames[team2]);
-//            console.log("Wincount"+winCount)
-//            console.log("Losscount"+lossCount)
-                if (lossCount === 0) {
-                    var linkStrength = winCount / (winCount + lossCount);
-                } else {
-                    var linkStrength = lossCount / (winCount + lossCount);
+                else{
+                    graph[idxY][idxX] =0;
                 }
-
-                console.log(team!==team2);
-                if (team !== team2) {
-
-                    if(linkStrength < 0.5){
-                        linkStrength = Math.round(((linkStrength*10)*3));
-                    }
-                    else{
-                        linkStrength =Math.round(((1-linkStrength)*10)*3) ;
-                    }
-                    // console.log("linkstrength" + linkStrength);
-// console.log("creating link")
-                    graph.links[linkIdx] = {"source": team, "target": team2, "value": linkStrength};
-                    linkIdx += 1;
-                }
+                    idxX+=1;
+//                }
                 winCount = 0;
                 lossCount = 0;
 
             }
+            idxY+=1;
+            idxX=0;
         }
-        // console.log("Helo");
-//        var graphJson = JSON.stringify(graph);
-//        graph = JSON.parse(graphJson);
         return graph;
 
     }
@@ -304,13 +317,5 @@ function getIndex(name) {
 
 
 </script>
-</td>
-<td>
-    <div id="gamesDiv">
-    </div>
-</td>
-</tr>
-</table>
-</div>
 </body>
 </html>

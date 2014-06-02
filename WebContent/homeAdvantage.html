@@ -308,7 +308,12 @@ d3.json("data/allSeasonFixer.json", function (data) {
             })
             .attr("r", "3px")
             .style("fill", function (d) {
-                return color(d.name);
+                console.log(d.name);
+                var name = stripSpaces(d.name, "Rect")
+                console.log(name);
+                var strokeCol = teamColors[name];
+                console.log(strokeCol);
+                return strokeCol;
             })
             .style("stroke", "grey")
             .style("stroke-width", "2px")
@@ -379,12 +384,14 @@ d3.json("data/allSeasonFixer.json", function (data) {
             })
             .style("stroke", "grey");
 
-    var homeBut = svg.append("g").append("rect")
+    var homeBut =svg.append("rect")
             .on("click", function () {
+                d3.select("Away").style("fill","#d3d3d3" );
+                d3.select(this).style("fill","#6495ED" )
                 change("Home");
-                console.log("HOME")
+
             })
-            .attr("id", "clear")
+            .attr("id", "Home")
             .attr("x", width)
             .attr("y", 220 + butH)
             .attr("width", butW)
@@ -395,12 +402,13 @@ d3.json("data/allSeasonFixer.json", function (data) {
             })
             .style("stroke", "grey");
 
-    var awayBut = svg.append("g").append("rect")
+    var awayBut = svg.append("rect")
             .on("click", function () {
+                d3.selectAll("rect").select("Home").style("fill","#d3d3d3" );
+                d3.select(this).style("fill","#6495ED" )
                 change("Away");
-                console.log("AWAY")
             })
-            .attr("id", "clear")
+            .attr("id", "Away")
             .attr("x", width)
             .attr("y", 220 + (butH * 2))
             .attr("width", butW)
@@ -609,7 +617,7 @@ var newData = teamsWinsAllTime(arg);
                 })
             };
         });
-        console.log("SeriesData", newseriesData);
+
 
         x.domain(newData.map(function (d) {
             return d.SeasonRound;
@@ -626,23 +634,12 @@ var newData = teamsWinsAllTime(arg);
         ]);
 
 series.data(newseriesData);
-        series.selectAll("path")
-                .attr("id", function (d) {
-                    return d.name;
-                })
+        series.select("path.line")
+                .transition()
                 .attr("d", function (d) {
                     d.line = this;
                     return line(d.values);
-                })
-                .attr("opacity", ".2")
-                .on("click", function () {
-                    fadeOuts(this);
-                })
-                .style("stroke", function (d) {
-                    return strokeCol;
-                })
-                .style("stroke-width", "4px")
-                .style("fill", "none");
+                });
 
         series.selectAll(".point")
                 .data(function (d) {
@@ -654,18 +651,8 @@ series.data(newseriesData);
                 })
                 .attr("cy", function (d) {
                     return y(d.value);
-                })
-                .style("fill", function (d) {
-                    return color(d.name);
-                })
-                .style("stroke", "grey")
-                .style("stroke-width", "2px")
-                .on("mouseover", function (d) {
-                    showPopover.call(this, d);
-                })
-                .on("mouseout", function (d) {
-                    removePopovers();
-                })
+                });
+
 
 
 
