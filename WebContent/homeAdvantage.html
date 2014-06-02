@@ -21,86 +21,7 @@
 <script src="http://w3resource.com/twitter-bootstrap/twitter-bootstrap-v2/js/bootstrap-tooltip.js"></script>
 <script src="http://w3resource.com/twitter-bootstrap/twitter-bootstrap-v2/js/bootstrap-popover.js"></script>
 <script type="text/javascript">
-//var teamColors = [
-//    {
-//        AdelaideThunderbirdsRect: [
-//            {'fill1': '#FF1493' /* Pink */, 'fill2': '#FFFFF1'/* White */}
-//        ]
-//
-//    },
-//    {
-//        CentralPulseRect: [
-//            {
-//                "fill1": "#FFFF00", /* Yellow */
-//                "fill2": "#1560BD" /* Blue */
-//            }
-//        ]
-//    }
-//    ,
-//    {                            /*CANTERBURY TACTIX*/
-//        CanterburyTactixRect: [
-//            {
-//                "fill1": '#FF0000', /* Red */
-//                "fill2": '#000000'/* Black */
-//            }
-//        ]
-//    },
-//    {                            /* MELB VIX*/
-//        MelbourneVixensRect: [
-//            {
-//                "fill1": '#191970', /* Dark Blue */
-//                "fill2": '#008080'/* Green */
-//            }
-//        ]
-//    },
-//    {                            /*NSW SWIFTS*/
-//        NewSouthWalesSwiftsRect: [
-//            {
-//                "fill1": '#FF0000', /*Red*/
-//                "fill2": '#6495ED'/*Light Blue*/
-//            }
-//        ]
-//    },
-//    {                            /*NORTHERN MYSTICS*/
-//        NorthernMysticsRect: [
-//            {
-//                "fill1": '#0000FF', /* Royal Blue */
-//                "fill2": '#FF0000'/* Red */
-//            }
-//        ]
-//    },
-//    {                            /*QUEENSLAND FIREBIRDS*/
-//        QueenslandFirebirdsRect: [
-//            {
-//                "fill1": '#800080', /* Purple */
-//                "fill2": '#FFA500'/* Gold */
-//            }
-//        ]
-//    },
-//    {                            /*SOUTHERN STEEL*/
-//        SouthernSteelRect: [
-//            {
-//                "fill1": '#00B7EB', /* Light Blue*/
-//                "fill2": '#000000'/*Black*/
-//            }
-//        ]
-//    },
-//    {                            /*WAIKATO BAY OF PLENTY MAGIC*/
-//        WaikatoBayofPlentyMagicRect: [
-//            {
-//                "fill1": '#000000', /* Black */
-//                "fill2": '#FF4500'/* Orange */
-//            }
-//        ]
-//    },
-//    {                            /*WESTCOST FEVER*/
-//        WestCoastFeverRect: [
-//            {
-//                "fill1": '#000000', /* Black */
-//                "fill2": '#32CD32'/* Bright Ugly Green*/
-//            }
-//        ]}
-//];
+
 var teamColors =
         {
             AdelaideThunderbirdsRect: '#FF1493', /* Pink */
@@ -117,37 +38,37 @@ var teamColors =
             MelbourneVixensRect: '#008080', /* Green */
 
             /*NSW SWIFTS*/
-        NewSouthWalesSwiftsRect:
-
-
-            '#6495ED',/*Light Blue*/
+            NewSouthWalesSwiftsRect: '#6495ED', /*Light Blue*/
             /*NORTHERN MYSTICS*/
-        NorthernMysticsRect:
-//
- '#0000FF', /* Royal Blue */
+            NorthernMysticsRect: //
+                    '#0000FF', /* Royal Blue */
 
             /*QUEENSLAND FIREBIRDS*/
-        QueenslandFirebirdsRect:
-
-'#800080', /* Purple */
+            QueenslandFirebirdsRect: '#800080', /* Purple */
 
             /*SOUTHERN STEEL*/
-        SouthernSteelRect:
-
-
- '#000000',/*Black*/
+            SouthernSteelRect: '#000000', /*Black*/
             /*WAIKATO BAY OF PLENTY MAGIC*/
-        WaikatoBayofPlentyMagicRect:
-
- /* Black */
- '#FF4500',/* Orange */
+            WaikatoBayofPlentyMagicRect: /* Black */
+                    '#FF4500', /* Orange */
             /*WESTCOST FEVER*/
-        WestCoastFeverRect:
-
- /* Black */
-'#32CD32'/* Bright Ugly Green*/
+            WestCoastFeverRect: /* Black */
+                    '#32CD32'/* Bright Ugly Green*/
         }
-;
+        ;
+
+var teamFades = {
+    "Adelaide Thunderbirds": false,
+    "Central Pulse": false,
+    "Canterbury Tactix": false,
+    "Melbourne Vixens": false,
+    "New South Wales Swifts": false,
+    "Northern Mystics": false,
+    "Queensland Firebirds": false,
+    "Southern Steel": false,
+    "Waikato Bay of Plenty Magic": false,
+    "West Coast Fever": false
+};
 var teamNamesCountry = {
     "Adelaide Thunderbirds": "AUS",
     "Central Pulse": "NZ",
@@ -215,7 +136,7 @@ var teamVenuesCountry = {
 
 
 };
-
+var selectedPath = [];
 var teamNames = [
     "Adelaide Thunderbirds",
     "Central Pulse" ,
@@ -231,6 +152,8 @@ var teamNames = [
 
 //var width = 2000;
 //var height = 700;
+var butH = 35;
+var butW = 130;
 var rectHeight = 30;
 var rectWidth = 50;
 var padding = 400;
@@ -277,7 +200,7 @@ var svg = d3.select("body").append("svg")
 //Begin Main Function
 d3.json("data/allSeasonFixer.json", function (data) {
 
-    var allTimeData = teamsWinsAllTime();
+    var allTimeData = teamsWinsAllTime("Home");
 //console.log(teamTrends);
 //    var allTimeData = ausVsNzPercentWinsAllTime();
 
@@ -345,13 +268,23 @@ d3.json("data/allSeasonFixer.json", function (data) {
             .attr("class", "series");
 
     series.append("path")
+            .attr("id", function (d) {
+                return d.name;
+            })
+            .attr("stay", "false")
             .attr("class", "line")
+
             .attr("d", function (d) {
+                d.line = this;
                 return line(d.values);
+            })
+            .attr("opacity", ".2")
+            .on("click", function () {
+                fadeOuts(this);
             })
             .style("stroke", function (d) {
                 console.log(d.name);
-                var name = stripSpaces(d.name,"Rect")
+                var name = stripSpaces(d.name, "Rect")
                 console.log(name);
                 var strokeCol = teamColors[name];
                 console.log(strokeCol);
@@ -400,9 +333,19 @@ d3.json("data/allSeasonFixer.json", function (data) {
             .attr("x", width - 10)
             .attr("width", 10)
             .attr("height", 10)
-            .style("fill", function(d){
+            .attr("id", function (d) {
+                return d.name;
+            })
+            .on("click", function () {
+//                var rec = d3.select(this);
+
+                d3.selectAll("path.line").select("#Melbourne Vixens")
+                        .attr("opacity", "1");
+//                console.log(d.name);
+            })
+            .style("fill", function (d) {
                 console.log(d.name);
-                var name = stripSpaces(d.name,"Rect")
+                var name = stripSpaces(d.name, "Rect")
                 console.log(name);
                 var strokeCol = teamColors[name];
                 console.log(strokeCol);
@@ -410,7 +353,11 @@ d3.json("data/allSeasonFixer.json", function (data) {
             })
             .style("stroke", "grey");
 
+
     legend.append("text")
+            .on("click", function (d) {
+                console.log(d);
+            })
             .attr("x", width - 12)
             .attr("y", 6)
             .attr("dy", ".35em")
@@ -419,7 +366,79 @@ d3.json("data/allSeasonFixer.json", function (data) {
                 return d;
             });
 
+    var clearBut = svg.append("g").append("rect")
+            .attr("id", "clear")
+            .attr("x", width)
+            .attr("y", 220)
+            .attr("width", butW)
+            .attr("height", butH)
+            .on("click", clearFades)
+            .style("fill", function (d) {
 
+                return "#d3d3d3";
+            })
+            .style("stroke", "grey");
+
+    var homeBut = svg.append("g").append("rect")
+            .on("click", function () {
+                change("Home");
+                console.log("HOME")
+            })
+            .attr("id", "clear")
+            .attr("x", width)
+            .attr("y", 220 + butH)
+            .attr("width", butW)
+            .attr("height", butH)
+            .style("fill", function (d) {
+
+                return "#d3d3d3";
+            })
+            .style("stroke", "grey");
+
+    var awayBut = svg.append("g").append("rect")
+            .on("click", function () {
+                change("Away");
+                console.log("AWAY")
+            })
+            .attr("id", "clear")
+            .attr("x", width)
+            .attr("y", 220 + (butH * 2))
+            .attr("width", butW)
+            .attr("height", butH)
+            .style("fill", function (d) {
+
+                return "#d3d3d3";
+            })
+            .style("stroke", "grey");
+
+
+    svg.append("text")
+            .attr("x", width + 45)
+            .attr("y", 240)
+            .style("fill", function (d) {
+
+                return "black";
+            })
+            .text("Clear")
+            .attr("pointer-events", "none");
+    svg.append("text")
+            .attr("x", width + 45)
+            .attr("y", 240 + butH)
+            .style("fill", function (d) {
+
+                return "black";
+            })
+            .text("Home")
+            .attr("pointer-events", "none");
+    svg.append("text")
+            .attr("x", width + 45)
+            .attr("y", 240 + (butH * 2))
+            .style("fill", function (d) {
+
+                return "black";
+            })
+            .text("Away")
+            .attr("pointer-events", "none");
     function ausVsNzPercentWinsAllTime() {
         var results = [];
 
@@ -464,7 +483,7 @@ d3.json("data/allSeasonFixer.json", function (data) {
         return results;
     }
 
-    function teamsWinsAllTime() {
+    function teamsWinsAllTime(arg) {
         var result;
         var results = [];
 
@@ -477,26 +496,35 @@ d3.json("data/allSeasonFixer.json", function (data) {
             for (var t = 0; t < teamNames.length; t++) {
 
 
-
                 var currTeam = teamNames[t];
                 var teamGamesTot = 0;
                 var teamWinTot = 0;
 
 
                 for (var e = 1; e <= 17; e++) {
-                    var teamGames = seas.filter(function (d) {
-                        return d.round === e && d.homeTeam == currTeam;
-                    });
-                    teamGamesTot += teamGames.length;
-                    var teamWins = teamGames.filter(function (d) {
-                        return d.winner == currTeam;
-                    });
-                    teamWinTot += teamWins.length;
+                    if (arg ===  "Home") {
+                        var teamGames = seas.filter(function (d) {
+                            return d.round === e && d.homeTeam == currTeam;
+                        });
+                        teamGamesTot += teamGames.length;
+                        var teamWins = teamGames.filter(function (d) {
+                            return d.winner == currTeam;
+                        });
+                        teamWinTot += teamWins.length;
+                    } else if(arg ===  "Away") {
+
+                        var teamGames = seas.filter(function (d) {
+                            return d.round === e && d.awayTeam == currTeam;
+                        });
+                        teamGamesTot += teamGames.length;
+                        var teamWins = teamGames.filter(function (d) {
+                            return d.winner == currTeam;
+                        });
+                        teamWinTot += teamWins.length;
+                    }
 
                 }
-                teamsRecord[t] = teamWinTot/teamGamesTot;
-
-
+                teamsRecord[t] = teamWinTot / teamGamesTot;
 
 
             }
@@ -516,12 +544,28 @@ d3.json("data/allSeasonFixer.json", function (data) {
                 "West Coast Fever": teamsRecord[9],
                 "SeasonRound": yearStr + ""};
             results.push(result);
-            result=null;
+            result = null;
 
         }
 
 
         return results;
+    }
+
+    function fadeOuts(ob) {
+//    d3.selectAll("path.line").attr("opacity", 0);
+        if (selectedPath[ob.id] != null) {
+            d3.select(selectedPath).attr("opacity", ".2");
+//        selectedPath[ob.id]=null;
+        }
+        d3.select(ob).attr("opacity", "1");
+        selectedPath[ob.id] = ob;
+//    console.log(selectedPath.id);
+    }
+
+    function clearFades() {
+        d3.selectAll("path.line").attr("opacity", .2);
+//        selectedPath.length =0;
     }
 
     function removePopovers() {
@@ -539,12 +583,93 @@ d3.json("data/allSeasonFixer.json", function (data) {
             html: true,
             content: function () {
                 return "" + d.label +
-                        "<br/>% Home Games Won: " + numeral(d.value).format('0.00%')
+                        "<br/>Home Games Won: " + numeral(d.value).format('0.00%')
             }
         });
         $(this).popover('show')
     }
 
+
+    function change(arg) {
+var newData = teamsWinsAllTime(arg);
+         labelVar = "SeasonRound";
+         varNames = d3.keys(newData[0]).filter(function (key) {
+            return key !== labelVar;
+        });
+
+
+        color.domain(varNames);
+
+
+        var newseriesData = varNames.map(function (name) { //D
+            return {
+                name: name,
+                values: newData.map(function (d) {
+                    return {name: name, label: d[labelVar], value: +d[name]};
+                })
+            };
+        });
+        console.log("SeriesData", newseriesData);
+
+        x.domain(newData.map(function (d) {
+            return d.SeasonRound;
+        })); //E
+        y.domain([
+            d3.min(newseriesData, function (c) {
+                return 0;
+            }),
+            d3.max(newseriesData, function (c) {
+                return d3.max(c.values, function (d) {
+                    return d.value;
+                });
+            })
+        ]);
+
+series.data(newseriesData);
+        series.selectAll("path")
+                .attr("id", function (d) {
+                    return d.name;
+                })
+                .attr("d", function (d) {
+                    d.line = this;
+                    return line(d.values);
+                })
+                .attr("opacity", ".2")
+                .on("click", function () {
+                    fadeOuts(this);
+                })
+                .style("stroke", function (d) {
+                    return strokeCol;
+                })
+                .style("stroke-width", "4px")
+                .style("fill", "none");
+
+        series.selectAll(".point")
+                .data(function (d) {
+                    return d.values;
+                })
+                .transition()
+                .attr("cx", function (d) {
+                    return x(d.label) + x.rangeBand() / 2;
+                })
+                .attr("cy", function (d) {
+                    return y(d.value);
+                })
+                .style("fill", function (d) {
+                    return color(d.name);
+                })
+                .style("stroke", "grey")
+                .style("stroke-width", "2px")
+                .on("mouseover", function (d) {
+                    showPopover.call(this, d);
+                })
+                .on("mouseout", function (d) {
+                    removePopovers();
+                })
+
+
+
+    }
 });
 //End Main Function
 
