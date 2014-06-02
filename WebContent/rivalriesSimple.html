@@ -147,13 +147,25 @@ var svg = d3.select("#barSvgCell")
         .attr("width", width)
         .attr("height", height);
         // .attr("transform", "translate(100,50)");
-var forceContainer = svg.append("g");
+var rivContainer = svg.append("g");
 var force = d3.layout.force()
         .charge(-500)
         .linkDistance(500)
         .size([width, height]);
 var color = d3.scale.category20();
 
+defs = svg.append("svg:defs");
+defs.append('svg:pattern')
+        .attr('id', 'AdelaideThunderbirdsImage')
+        .attr('patternUnits', 'objectBoundingBox')
+        .attr('width', 1)
+        .attr('height', 1)
+        .append('svg:image')
+        .attr('xlink:href', 'http://i59.tinypic.com/e9xjk2.jpg')
+        .attr('x', 0    )
+        .attr('y', 0)
+        .attr('width', 200)
+        .attr('height', 200);
 
 //MAIN BEGIN
 
@@ -161,60 +173,57 @@ d3.json("data/allSeasons.json", function (data) {
 
     console.log(data);
 
-    var forceGraphData = getRivals(data);
-    //BEGIN FORCED
+    var rivalsGraphData = getRivals(data);
+    //BEGIN MAIN
 
-force.nodes(forceGraphData.nodes)
-        .links(forceGraphData.links)
-        .start();
-
-var link =  svg.selectAll("line")
-        .data(forceGraphData.links)
-        .enter()
-        .append("line")
-        .attr("class","link")
-        .attr("x1", function(d) { return d.source.x; })
-            .attr("y1", function(d) { return d.source.y; })
-            .attr("x2", function(d) { return d.target.x; })
-            .attr("y2", function(d) { return d.target.y; })
-        .style("stroke-width", function(d){
-            console.log(d.value);
-            return d.value+1;
-        })
-        .style("stroke","#FFFFFF");
-
-    var node = svg.selectAll(".node")
-            .data(forceGraphData.nodes)
-            .enter().append("circle")
+currContainer = svg.append("g");
+    currContainer.append('circle')
+            .attr("cx", width /3)
+            .attr("cy", height/2)
+            .attr("r", 100)
             .attr("class", function(d){
-                var clazz = stripSpaces(d.name,"Circle");
-                return clazz;
-            })
-            .attr("r", 20).call(force.drag);
-//            .style("fill", function(d) { return color(d.group); })
-          
+                var name = stripSpaces(currTeam, "Circle");
 
-    node.append("title")
-            .text(function(d) { return d.name; });
+                return name;
+            });
 
-    force.on("tick", function() {
-        link.attr("x1", function(d) { 
-console.log(d.source.x);
-            return d.source.x; })
-                .attr("y1", function(d) { return d.source.y; })
-                .attr("x2", function(d) { return d.target.x; })
-                .attr("y2", function(d) { return d.target.y; });
-
-        node.attr("cx", function(d) { return d.x; })
-                .attr("cy", function(d) { return d.y; });
-    });
+    currContainer.append('circle')
+            .attr("cx", width /3)
+            .attr("cy", height/2)
+            .attr("r", 100)
+//            .attr("class", function(d){
+//                var name = stripSpaces(currTeam, "Circle");
+//
+//                return name;
+//            })
+            .attr("fill","url(#AdelaideThunderbirdsImage)");
 
 
 
 
 
-    //END FORCED
-    console.log("Helo");
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //END MAIN
+
+
+
+
+
+
+
+
 
 
     //Selector
@@ -230,18 +239,16 @@ console.log(d.source.x);
 
     function getRivals(data) {
 
-        var graph = {
-            nodes: [],
-            links: []
-        };
+        var graph = [];
+
+
 
 
         var linkIdx = 0;
-        for (var team in teamNames) {
-            graph.nodes[team] = {"name": teamNames[team], "group": team};
+
 
             for (var team2 in teamNames) {
-                if (teamNames[team] !== teamNames[team2]) {
+                if (currTeam !== teamNames[team2]) {
                     var year = +2008;
                     var winCount = 0;
                     var lossCount = 0;
@@ -249,10 +256,10 @@ console.log(d.source.x);
                     for (var i = 5; i >= 0; i--) {
                         var season = data["seasons"][0][year];
                         for (var x = season.length - 1; x >= 0; x--) {
-                            if (season[x].winner === teamNames[team] && season[x].loser === teamNames[team2]) {
+                            if (season[x].winner === currTeam && season[x].loser === teamNames[team2]) {
                                 winCount += 1;
                             }
-                            else if (season[x].winner === teamNames[team2] && season[x].loser === teamNames[team]) {
+                            else if (season[x].winner === teamNames[team2] && season[x].loser === currTeam) {
 
                                 lossCount += 1;
                             }
@@ -266,25 +273,23 @@ console.log(d.source.x);
                 } else {
                     var linkStrength = lossCount / (winCount + lossCount);
                 }
-
-                console.log(team!==team2);
-                if (team !== team2) {
-
                     if(linkStrength < 0.5){
                         linkStrength = Math.round(((linkStrength*10)*3));
                     }
                     else{
                         linkStrength =Math.round(((1-linkStrength)*10)*3) ;
                     }
-                    graph.links[linkIdx] = {"source": team, "target": team2, "value": linkStrength};
-                    linkIdx += 1;
+                if (currTeam !== teamNames[team2]) {
+                    graph.push({"source": currTeam, "target": teamNames[team2], "value": linkStrength});
                 }
                 winCount = 0;
                 lossCount = 0;
 
             }
-        }
 
+graph = graph.sort(function(a,b){
+    return a.value < b.value;
+})
         return graph;
 
     }
