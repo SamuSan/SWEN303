@@ -79,7 +79,7 @@ height: 100%;
 .SouthernSteelCircle,							
 .WaikatoBayofPlentyMagicCircle,							
 .WestCoastFeverCircle{
-	stroke-width:5px;
+	stroke-width:3px;
 	border-color: #000000;
 
 }
@@ -131,7 +131,7 @@ h2 {
     width: 800px;
     margin-left: auto;
     margin-right: auto;
-    margin-top: 30px;
+    margin-top: 20px;
     margin-bottom: 10px;
     background-color: #d3d3d7;
 }

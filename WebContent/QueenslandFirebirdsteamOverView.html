@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head>
+
+    <link rel="stylesheet" href="styles/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/d3.slider.css">
+
+
+</head>
+
+<body>
+<script type="text/javascript" src="d3/d3.min.js"></script>
+<script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+<script type="text/javascript" src="node_modules/topojson/topojson.min.js"></script>
+<script type="text/javascript" src="js/d3slider/d3.slider.js"></script>
+<script type="text/javascript" src="d3Functions.js"></script>
+
+<select id="teamSelector" class="teamSel">
+    <option> Adelaide Thunderbirds</option>
+    <option> Melbourne Vixens</option>
+    <option> Central Pulse</option>
+    <option> Queensland Firebirds</option>
+    <option> Waikato Bay of Plenty Magic</option>
+    <option> Southern Steel</option>
+    <option> New South Wales Swifts</option>
+    <option> Northern Mystics</option>
+    <option> West Coast Fever</option>
+    <option> Canterbury Tactix</option>
+</select>
+
+<h1 id="titleHeader" align="middle" class="titleHeader"></h1>
+<script type="text/javascript">
+
+
+var teamColors = [
+    {
+        AdelaideThunderbirdsRect: [
+            {'fill1': '#FF1493' /* Pink */, 'fill2': '#FFFFF1'/* White */}
+        ]
+
+    },
+    {
+        CentralPulseRect: [
+            {
+                "fill1": "#FFFF00", /* Yellow */
+                "fill2": "#1560BD" /* Blue */
+            }
+        ]
+    }
+    ,
+    {                            /*CANTERBURY TACTIX*/
+        CanterburyTactixRect: [
+            {
+                "fill1": '#FF0000', /* Red */
+                "fill2": '#000000'/* Black */
+            }
+        ]
+    },
+    {                            /* MELB VIX*/
+        MelbourneVixensRect: [
+            {
+                "fill1": '#191970', /* Dark Blue */
+                "fill2": '#008080'/* Green */
+            }
+        ]
+    },
+    {                            /*NSW SWIFTS*/
+        NewSouthWalesSwiftsRect: [
+            {
+                "fill1": '#FF0000', /*Red*/
+                "fill2": '#6495ED'/*Light Blue*/
+            }
+        ]
+    },
+    {                            /*NORTHERN MYSTICS*/
+        NorthernMysticsRect: [
+            {
+                "fill1": '#0000FF', /* Royal Blue */
+                "fill2": '#FF0000'/* Red */
+            }
+        ]
+    },
+    {                            /*QUEENSLAND FIREBIRDS*/
+        QueenslandFirebirdsRect: [
+            {
+                "fill1": '#800080', /* Purple */
+                "fill2": '#FFA500'/* Gold */
+            }
+        ]
+    },
+    {                            /*SOUTHERN STEEL*/
+        SouthernSteelRect: [
+            {
+                "fill1": '#00B7EB', /* Light Blue*/
+                "fill2": '#000000'/*Black*/
+            }
+        ]
+    },
+    {                            /*WAIKATO BAY OF PLENTY MAGIC*/
+        WaikatoBayofPlentyMagicRect: [
+            {
+                "fill1": '#000000', /* Black */
+                "fill2": '#FF4500'/* Orange */
+            }
+        ]
+    },
+    {                            /*WESTCOST FEVER*/
+        WestCoastFeverRect: [
+            {
+                "fill1": '#000000', /* Black */
+                "fill2": '#32CD32'/* Bright Ugly Green*/
+            }
+        ]}
+];
+var teamNames = [
+    "Adelaide Thunderbirds",
+    "Central Pulse" ,
+    "Canterbury Tactix",
+    "Melbourne Vixens",
+    "New South Wales Swifts",
+    "Northern Mystics",
+    "Queensland Firebirds",
+    "Southern Steel",
+    "Waikato Bay of Plenty Magic",
+    "West Coast Fever"
+];
+document.getElementById("teamSelector").selectedIndex=3;
+function getTitle() {
+    document.getElementById("titleHeader").innerHTML = teamNames[6];
+}
+getTitle();
+
+var width = 2000;
+var height = 750;
+var marg = 50;
+
+var fontSize = "25px"
+var pbsWidth = 300;
+var pbsHeight = 375;
+var pbsBarHeight = 50;
+var streakWidth = 600;
+var streakHeight = 375;
+var streakX = 500;
+var streakY = 0;
+var streakXSchink = 30;
+
+
+var pointsWidth = 1200;
+var pointsHeight = 500;
+var placingsX = 0;
+var pointsXShink = 230;
+var placingsY = 400;
+var pointsYSchink = 5;
+
+var buttonsHeight = 300;
+var buttonsWidth = 100;
+var buttX = 1225;
+var buttY = 400;
+
+var pieRadius = 150;
+var pieInnerRadius = 10;
+var rectHeight = 30;
+var rectWidth = 50;
+var padding = 400;
+var pointsBuf = 50;
+var buffer = 30;
+
+var lines = [];
+function popLines() {
+    for (var x = 0; x < 15; x++) {
+        lines.push(+x + 1);
+    }
+}
+
+var currRound = 17;
+var currSeason = 2008;
+var svg = d3.select("body")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .attr("transform", "translate(" + 150 + "," + 0 + ")");
+
+var teamContainer = svg.append("g");
+var pointsOverSeason = svg.append("g");
+// var winLossOverAll = svg.append("g");
+
+var txtContainer = svg.append("g");
+var backLines = svg.append("g");
+var yScale = d3.scale.linear()
+        .domain([0, 34])
+        .range([height - 50, 10]);
+var pointsAxis = d3.svg.axis()
+        .orient("left").ticks(34)
+        .scale(yScale);
+
+var colorScale = d3.scale.ordinal()
+        .domain(0, 1)
+        .range(["#000000", "#32CD32"]);
+
+//Begin Main Function
+d3.json("data/allSeasons.json", function (data) {
+
+    //Set Selector Chnage action
+    d3.select("#teamSelector").on("change", function () {
+        setTeamName();
+        change();
+    });
+    var currTeam = "";
+
+    function setTeamName() {
+        var sel = document.getElementById("teamSelector");
+        document.getElementById("titleHeader").innerHTML = stripQuotes(sel.options[sel.selectedIndex].value);
+        var name = stripQuotes(sel.options[sel.selectedIndex].value);
+        currTeam = name;
+    }
+
+    setTeamName();
+    var butH = 50;
+    var butW = 200;
+    var butY = 2;
+    var butX = 1010;
+    svg.append("a").attr("xlink:href", function(){
+        var lin = stripSpaces(currTeam, "RivalRankings.html");
+        return lin;
+    }).append("rect")
+            .attr("id", "seasRound")
+            .on("mouseover", function(){
+
+                d3.select(this).style("fill","#6495ED" );
+            })
+            .on("mouseout", function(){
+                d3.select(this).style("fill","grey" );
+            })
+            .attr("x",butX+ butW)
+            .attr("y", butY)
+            .attr("width", butW)
+            .attr("height", butH)
+            .attr("fill", "grey")
+            .attr("stroke", "black")
+            .attr("stroke-width", "3px");
+
+    svg.append("text")
+            .attr("pointer-events", "none")
+            .attr("x",butX + 220  )
+            .attr("y", butY+ (30))
+            .attr("fill", "black")
+            .text("Rival Rankings")
+            .attr("font-size", "18px");
+    var roundsDataSet = getRoundOutComes(data);
+    var pointsOverSeasonsDataSet = getPointsOverSeasons(data);
+    var pbsScale = d3.scale.linear()
+            .domain([0, 34])
+            .range([0, pbsWidth]);
+
+
+    var pbsBack = svg.append("g");
+
+    pbsBack.append("rect")
+            .attr("width", pbsWidth + 100)
+            .attr("height", pbsHeight)
+            .attr("id", "pbsBack")
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("class", "pointsBySeason");
+
+    pbsBack.append("text").text("Total Points by Season").attr("x", pbsWidth / 3).attr("y", pbsBarHeight / 2).attr("font-size", "18px");
+
+
+//POINTS BY SESSON
+    pointsOverSeason.selectAll("rect")
+            .data(pointsOverSeasonsDataSet)
+            .enter()
+            .append("rect")
+            .on("click", function (d) {
+                currSeason = d.Season;
+                change();
+            })
+            .attr("x", marg)
+            .attr("y", function (d, i) {
+                return pbsBarHeight * i + pbsBarHeight;
+            })
+            .attr("id", function (d) {
+                return d.Season;
+            })
+            .attr("height", pbsBarHeight)
+            .attr("width", function (d) {
+                return pbsScale(d.Points);
+            })
+            .attr("class", function (d) {
+                var name = stripSpaces(d.Team, "Circle");
+
+                return name;
+            })
+            .attr("stroke-width", "1px")
+            .attr("stroke", "white");
+
+
+    pointsOverSeason.selectAll("text")
+            .data(pointsOverSeasonsDataSet)
+            .enter()
+            .append("text")
+            .text(function (d) {
+                return d.Season;
+            })
+            .attr("x", marg / 5)
+            .attr("y", function (d, i) {
+                return pbsBarHeight * i + (pbsBarHeight / 2 + pbsBarHeight);
+            })
+            .attr("fill", "black")
+
+    var pointsLab = pointsOverSeason.append("g").attr("id", "pointsLab").selectAll("text").append("text")
+            .data(pointsOverSeasonsDataSet)
+            .enter()
+            .append("text")
+            .text(function (d) {
+                return d.Points + " pts";
+            })
+            .attr("x", function (d) {
+                return pbsWidth + 50;
+            })
+            .attr("y", function (d, i) {
+                return pbsBarHeight * i + (pbsBarHeight / 2 + pbsBarHeight);
+            })
+            .attr("fill", "black");
+
+// BEGIN STREAKS OF WINS
+
+    var streakScaleVert = d3.scale.linear().domain([0, 15]).range([0, (streakHeight-15)]);
+    var streakAxisScaleVert = d3.scale.linear().domain([16, 0]).range([0, (streakHeight)]);
+    var streakScaleHor = d3.scale.linear().domain([0, 5]).range([0, streakWidth]);
+    var streakCont = d3.select("svg")
+            .append("g")
+            .attr("width", streakWidth)
+            .attr("height", streakHeight)
+    var streakBack = svg.append("g");
+    var streakBars = svg.append("g");
+    streakBack.append("rect")
+            .attr("width", streakWidth + 100)
+            .attr("height", streakHeight)
+            .attr("id", "homAwBackG")
+            .attr("x", streakX)
+            .attr("y", streakY)
+            .attr("class", "placingsSeason");
+    streakBack.append("text")
+            .attr("x", streakX + (streakWidth / 3))
+            .attr("y", streakY + 17)
+            .attr("font-size", "15px")
+            .text("Season Winning Streaks");
+
+    var streakAxis = d3.svg.axis().ticks([16]).tickValues([ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]).orient("left").scale(streakAxisScaleVert);
+    streakBack.append("g")
+            .attr("transform", "translate(" + streakX + ",-10 )")
+            .call(streakAxis);
+    var streakData = getStreaks(data);
+    console.log(streakData[3].Streak);
+    streakBars.selectAll("rect")
+            .data(streakData)
+            .enter()
+            .append("rect")
+
+            .on("click", function (d) {
+                currSeason = d.Year;
+                change();
+            })
+            .on("mouseover", function(d,i){
+                d3.select(this) .attr("width", 55)
+                        .attr("height", streakScaleVert(d.Streak)+5)
+                        .attr("y", function (d) {
+                            return (streakHeight - streakScaleVert(d.Streak) - 15 );
+                        });
+            })
+            .on("mouseout", function(d,i){
+                d3.select(this).attr("width", 50)
+                        .attr("height", function (d) {
+                            return streakScaleVert(d.Streak);
+                        })
+                        .attr("y", function (d) {
+                            return (streakHeight - streakScaleVert(d.Streak) - 10 );
+                        });
+            })
+            .attr("width", 50)
+            .attr("height", function (d) {
+                return streakScaleVert(d.Streak);
+            })
+            .attr("x", function (d, i) {
+                return streakScaleHor(i) + streakX + streakXSchink;
+            })
+            .attr("y", function (d) {
+                return (streakHeight - streakScaleVert(d.Streak) - 10 );
+            })
+            .attr("class", function (d) {
+                var name = stripSpaces(currTeam, "Circle");
+
+                return name;
+            })
+            .append("title").text(function (d) {
+                return  d.Year + ": " + d.Streak + " Consecutive Wins";
+            });
+    streakBars.selectAll("text")
+            .data(streakData)
+            .enter()
+            .append("text")
+            .attr("pointer-events","none")
+            .attr("x", function (d, i) {
+                return streakScaleHor(i) + streakX + streakXSchink + 5;
+            })
+            .attr("y", function (d) {
+                return (streakHeight - streakScaleVert(d.Streak) + 6 );
+            })
+            .text(function (d) {
+                if(d.Streak >= 1){
+                    return d.Year;
+                }
+                return "";
+            })
+            .attr("fill", "white");
+    popLines();
+    streakBars.selectAll("line")
+            .data(lines)
+            .enter()
+            .append("line")
+            .attr("x1", streakX)
+            .attr("x2", streakWidth + streakX + 100)
+            .attr("y1", function (d) {
+                return streakAxisScaleVert(d) - 10;
+            })
+            .attr("y2", function (d) {
+                return streakAxisScaleVert(d) - 10;
+            })
+            .attr("stroke", "#C0C0C0")
+            .attr("stroke-width", 1)
+            .style("opacity", .3);
+
+
+// END STREAKS OF WINS
+
+
+//POINTS
+
+
+    var pointsRadScale = d3.scale.linear().domain([1, 50]).range([1, 30]);
+    var pointsWLScale = d3.scale.linear().domain([1, 1]).range([ pointsHeight - 60, 1]);
+    var pointsYScale = d3.scale.linear().domain([1, 50]).range([ pointsHeight - 60, 1]);
+    var pointsBack = svg.append("g");
+
+    pointsBack.append("rect")
+            .attr("width", pointsWidth)
+            .attr("height", pointsHeight)
+            .attr("id", "pointsBackG")
+            .attr("x", placingsX)
+            .attr("y", placingsY)
+            .attr("translate","transform(300,0)")
+            .attr("class", "pointBack");
+
+    var pointsData = data.seasons[0][currSeason].filter(function (d) {
+        return d.winner === currTeam || d.loser === currTeam;
+    });
+    var pointsRoundScale = d3.scale.linear().domain([1, pointsData.length]).range([0, pointsWidth - 100]);
+
+
+//HOME TEAM
+    var pointsGroup = pointsBack.append("g");
+    pointsGroup.selectAll("circle")
+            .data(pointsData)
+            .enter()
+            .append("circle")
+            .attr("cx", function (d, i) {
+
+                return pointsRoundScale(i) + pointsXShink;
+            })
+            .attr("cy", function (d) {
+                if (d.winner === currTeam) {
+                    return 100 + (height - pointsHeight / 2);
+                }
+                return 200 + (height - pointsHeight / 2);
+            })
+            .attr("r", function (d) {
+                return 30;
+            })
+            .attr("class", function (d) {
+                var name = stripSpaces(currTeam, "Circle");
+
+                return name;
+            })
+            .append("title").text(function (d) {
+                return  currTeam;
+            });
+
+    pointsGroup.append("text")
+            .attr("x", pointsRoundScale(pointsData.length /2))
+            .attr("y", (height - pointsHeight / 2))
+            .attr("font-size", fontSize)
+            .text(function(){
+                return "Season "+currSeason+ " Wins and Losses";
+            });
+
+    var pointsBubbLab = pointsGroup.append("g").attr("id", "pointsBubbLab")
+            .selectAll("text")
+            .append("text")
+            .data(pointsData)
+            .enter()
+            .append("text")
+            .text(function (d) {
+                if (d.winner === currTeam) {
+                    var y = d.winnerScore;
+                }
+                else {
+                    var y = d.loserScore;
+                }
+                return y;
+            })
+            .attr("x", function (d, i) {
+                if (d.winner === currTeam) {
+                    var r = d.winnerScore;
+                }
+                else {
+                    var r = d.loserScore;
+                }
+
+                return pointsRoundScale(i) + pointsXShink -8;
+            })
+            .attr("y", function (d) {
+                if (d.winner === currTeam) {
+                    return 100 + (height - pointsHeight / 2) + pointsYSchink;
+                }
+                return 200 + (height - pointsHeight / 2) + pointsYSchink;
+            })
+            .attr("fill", "white")
+            .append("title").text(function (d) {
+                if (d.winner !== currTeam) {
+                    var name = d.winner;
+                }
+                else {
+                    var name = d.loser;
+                }
+                return  name;
+            });
+    //WIN AND LOSS LABEL
+    pointsBack.append("text").attr("font-size",fontSize).attr("x", 0).attr("y",110 + (height - pointsHeight / 2)).text("Winner");
+    pointsBack.append("text").attr("font-size",fontSize).attr("x", 0).attr("y",210 + (height - pointsHeight / 2)).text("Loser");
+//HOME TEAM END
+    var pointsBackOppo = svg.append("g");
+    //OPPOSITION TEAM BEGING
+    pointsBackOppo.selectAll("circle")
+            .data(pointsData)
+            .enter()
+            .append("circle")
+            .attr("cx", function (d, i) {
+
+                return pointsRoundScale(i) + pointsXShink;
+            })
+            .attr("cy", function (d) {
+                if (d.winner !== currTeam) {
+                    return 100 + (height - pointsHeight / 2);
+                }
+                return 200 + (height - pointsHeight / 2);
+            })
+            .attr("r", function (d) {
+                return 20
+            })
+            .attr("class", function (d) {
+                if (d.winner !== currTeam) {
+                    var name = d.winner;
+                }
+                else {
+                    var name = d.loser;
+                }
+                var name = stripSpaces(name, "Circle");
+
+                return name;
+            })
+            .append("title").text(function (d) {
+                if (d.winner !== currTeam) {
+                    var name = d.winner;
+                }
+                else {
+                    var name = d.loser;
+                }
+                return  name;
+            });
+    var pointsBubbLabOppo = pointsBackOppo.append("g").attr("id", "pointsBubbLabOppo")
+            .selectAll("text")
+            .append("text")
+            .data(pointsData)
+            .enter()
+            .append("text")
+            .text(function (d) {
+                if (d.winner !== currTeam) {
+                    var y = d.winnerScore;
+                }
+                else {
+                    var y = d.loserScore;
+                }
+                return y;
+            })
+            .attr("x", function (d, i) {
+                if (d.winner !== currTeam) {
+                    var r = d.winnerScore;
+                }
+                else {
+                    var r = d.loserScore;
+                }
+
+                return pointsRoundScale(i) +pointsXShink -8;
+            })
+            .attr("y", function (d) {
+                if (d.winner !== currTeam) {
+                    return 100 + (height - pointsHeight / 2) + pointsYSchink;
+                }
+                return 200 + (height - pointsHeight / 2) + pointsYSchink;
+            })
+            .attr("fill", "white")
+            .append("title").text(function (d) {
+                if (d.winner !== currTeam) {
+                    var name = d.winner;
+                }
+                else {
+                    var name = d.loser;
+                }
+                return  name;
+            });
+
+
+    //OPPOSITION TEAM END
+
+//END POINTS
+
+
+    function getRoundOutComes(dataSet) {
+        var teamResultsByRound = [];
+        var season = dataSet["seasons"][0][currSeason];
+        for (var e = 0; e < teamNames.length; e++) {
+            var points = 0;
+
+            for (var j = currRound; j >= 1; j--) {
+
+                var extractByRound = season.filter(function (d) {
+                    return d.round === j;
+                });
+
+
+                for (var i = 0; i < extractByRound.length; i++) {
+                    if (teamNames[e] === extractByRound[i]["winner"]) {
+                        points += 2;
+                    }
+                }
+            }
+            teamResultsByRound.push({"Team": teamNames[e], "Points": points})
+        }
+        teamResultsByRound.sort(function (a, b) {
+            return b["Points"] - a["Points"];
+        });
+        return teamResultsByRound;
+    }
+
+    function getPointsOverSeasons(dataSet) {
+        var teamResultsBySeason = [];
+        var year = 2008;
+        var seasons = dataSet["seasons"][0];
+        for (var e = 0; e < 6; e++) {
+            var season = seasons[year];
+            var points = 0;
+
+            for (var j = currRound; j >= 1; j--) {
+
+                var extractByRound = season.filter(function (d) {
+                    return d.round === j;
+                });
+
+
+                for (var i = 0; i < extractByRound.length; i++) {
+                    if (currTeam === extractByRound[i]["winner"]) {
+                        points += 2;
+                    }
+                }
+            }
+            teamResultsBySeason.push({"Team": currTeam, "Season": year, "Points": points})
+            year += 1;
+        }
+        return teamResultsBySeason;
+    }
+
+    //BEGINS WINLOSS FUNCTION
+    function getWinLoss(homeAway) {
+        var seasonWinLoss = [];
+
+        var winCount = 0;
+        var lossCount = 0;
+        var insertDex = 0;
+        var seasons = data.seasons[0];
+        var year = 2008;
+        if (homeAway === "Home") {
+            for (var i = 6; i > 0; i--) {
+                var season = seasons[year];
+                for (var x = season.length - 1; x >= 0; x--) {
+                    if (season[x].homeTeam == currTeam) {
+                        if (season[x].winner === currTeam) {
+                            winCount += 1;
+                        }
+                        else if (season[x].loser === currTeam) {
+                            lossCount += 1;
+                        }
+                    }
+
+                }
+                year += 1;
+
+            }
+            var seasonWinOutCome = {
+                "TeamName": currTeam, "year": year, "label": "Wins", "count": winCount
+            };
+            var seasonLossOutCome = {
+                "TeamName": currTeam, "year": year, "label": "Losses", "count": lossCount
+            };
+
+            seasonWinLoss[insertDex] = seasonWinOutCome;
+            seasonWinLoss[insertDex + 1] = seasonLossOutCome;
+        } else if (homeAway === "Away") {
+
+            for (var i = 6; i > 0; i--) {
+                var season = seasons[year];
+                for (var x = season.length - 1; x >= 0; x--) {
+                    if (season[x].awayTeam == currTeam) {
+                        if (season[x].winner === currTeam) {
+                            winCount += 1;
+                        }
+                        else if (season[x].loser === currTeam) {
+                            lossCount += 1;
+                        }
+                    }
+
+                }
+
+                year += 1;
+
+            }
+            var seasonWinOutCome = {
+                "TeamName": currTeam, "year": year, "label": "Wins", "count": winCount
+            };
+            var seasonLossOutCome = {
+                "TeamName": currTeam, "year": year, "label": "Losses", "count": lossCount
+            };
+
+            seasonWinLoss[insertDex] = seasonWinOutCome;
+            seasonWinLoss[insertDex + 1] = seasonLossOutCome;
+        }
+
+        return seasonWinLoss;
+    }
+
+//End Round outcomes
+
+//End Sliders
+    function getIndex(name) {
+        return teamNames.indexOf(name);
+    }
+
+//Placings BEIGON
+
+    function getPlacings(dataSet) {
+        var placings = [];
+        var teamResultsByRound = [];
+        var year = 2008;
+        var seasons = dataSet["seasons"][0];
+        for (var x = 0; x >= 0; x--) {
+
+
+            var season = dataSet["seasons"][0][year];
+            for (var e = 0; e < teamNames.length; e++) {
+
+                var points = 0;
+                for (var j = currRound; j >= 1; j--) {
+
+                    var extractByRound = season.filter(function (d) {
+                        return d.round === j;
+                    });
+
+
+                    for (var i = 0; i < extractByRound.length; i++) {
+                        if (teamNames[e] === extractByRound[i]["winner"]) {
+                            points += 2;
+                        }
+                    }
+                }
+                teamResultsByRound.push({"Team": teamNames[e], "Year": year, "Points": points});
+            }
+            teamResultsByRound.sort(function (a, b) {
+                return b["Points"] - a["Points"];
+            });
+
+            var placing = 1;
+            for (var i = 0; i < teamResultsByRound.length; i++) {
+
+
+                if (teamResultsByRound[i].Team !== currTeam) {
+                    placing += 1;
+                }
+
+
+            }
+
+
+            year += 1;
+        }
+        return placings;
+    }
+
+
+    function getStreaks(dataSet) {
+        var streaks = [];
+        var seasYear = 2008;
+        var numWins = 0;
+        var maxStreak = 0;
+        for (var x = 6; x > 0; x--) {
+            var season = dataSet["seasons"][0][seasYear];
+            season = season.filter(function (d) {
+                return d.homeTeam === currTeam || d.awayTeam === currTeam
+            })
+
+            for (var e = 0; e < season.length; e++) {
+                if (seasYear === 2011) {
+                    console.log("///////////////")
+                    console.log(seasYear);
+                    console.log(currTeam);
+                    console.log(season.length);
+                    console.log(numWins);
+                    console.log(maxStreak);
+                }
+                if (season[e].winner === currTeam) {
+                    var streak = true;
+                    var j = e + 1
+                    while (streak && j < season.length) {
+                        numWins += 1;
+                        for (; j < season.length; j++) {
+                            if (season[j].winner === currTeam) {
+                                numWins += 1;
+                                if (j + 1 === season.length) {
+                                    if (numWins > maxStreak) {
+                                        maxStreak = numWins;
+                                        numWins = 0;
+                                    }
+                                }
+                            }
+                            else {
+                                if (numWins > maxStreak) {
+                                    maxStreak = numWins;
+                                }
+                                numWins = 0;
+                                streak = false;
+                                e = j;
+                                break;
+
+                            }
+                        }
+                    }
+                }
+                numWins = 0;
+            }
+            streaks.push({"Year": seasYear, "Streak": maxStreak});
+            numWins = 0;
+            maxStreak = 0;
+            seasYear += 1;
+
+        }
+
+        return streaks;
+    }
+
+    //PLACINGS END
+///BEGIN CHANGE METHOD
+    function change() {
+        //Change REcts
+
+        var newPointsOverSeasonsDataSet = getPointsOverSeasons(data);
+
+        pointsOverSeason.selectAll("rect")
+                .data(newPointsOverSeasonsDataSet)
+                .transition()
+                .delay(0)
+                .duration(500)
+                .attr("width", function (d) {
+                    return pbsScale(d.Points);
+                })
+                .attr("class", function (d) {
+                    var winner = d.Team;
+
+                    return stripSpaces(winner, "Circle");
+                })
+                .attr("stroke-width", "1px")
+                .attr("stroke", "white");
+
+        pointsOverSeason.select("#pointsLab").selectAll("text")
+                .data(newPointsOverSeasonsDataSet)
+                .text(function (d) {
+                    return d.Points + " pts";
+                })
+                .attr("y", function (d, i) {
+                    return pbsBarHeight * i + (pbsBarHeight / 2 + pbsBarHeight);
+                })
+
+        //STREAK CHANGES
+        var newStreakData = getStreaks(data);
+        streakBars.selectAll("rect")
+                .data(newStreakData)
+                .transition()
+                .attr("width", 50)
+                .attr("height", function (d) {
+                    return streakScaleVert(d.Streak);
+                })
+                .attr("x", function (d, i) {
+                    return streakScaleHor(i) + streakX + streakXSchink;
+                })
+                .attr("y", function (d) {
+                    return (streakHeight - streakScaleVert(d.Streak) - 10 );
+                })
+                .attr("class", function (d) {
+                    var name = stripSpaces(currTeam, "Circle");
+
+                    return name;
+                })
+                .attr("title", function (d) {
+                    return  d.Year + ": " + d.Streak + " Consecutive Wins";
+                });
+
+        streakBars.selectAll("text")
+                .data(newStreakData)
+                .transition()
+                .attr("x", function (d, i) {
+                    return streakScaleHor(i) + streakX + streakXSchink + 5;
+                })
+                .attr("y", function (d) {
+                    return (streakHeight - streakScaleVert(d.Streak) + 6 );
+                })
+                .text(function (d) {
+                    if(d.Streak >= 1){
+                        return d.Year;
+                    }
+                    return "";
+                })
+                .attr("fill", "white");
+//CHANGE POINTS
+        var newPointsData = data.seasons[0][currSeason].filter(function (d) {
+            return d.winner === currTeam || d.loser === currTeam;
+        });
+
+        pointsRoundScale = d3.scale.linear().domain([1, newPointsData.length]).range([0, 1200]);
+
+
+        pointsBack.selectAll("circle")
+                .data(newPointsData)
+                .transition()
+                .attr("cx", function (d, i) {
+
+                    return pointsRoundScale(i) + pointsXShink;
+                })
+                .attr("cy", function (d) {
+                    if (d.winner === currTeam) {
+                        return 100 + (height - pointsHeight / 2);
+                    }
+                    return 200 + (height - pointsHeight / 2);
+                })
+                .attr("r", function (d) {
+                    return 30;
+                })
+                .attr("class", function (d) {
+                    var name = stripSpaces(currTeam, "Circle");
+
+                    return name;
+                })
+                .attr("opacity", function (d) {
+                    if (d.winner === currTeam) {
+                        var o = 1;
+                    }
+                    else {
+                        var o = .9;
+                    }
+                    return o;
+                })
+                .attr("title", function(d){
+                    return currTeam;
+                });
+        var circs = pointsBack.selectAll("circle")
+                .data(newPointsData);
+        circs.exit().remove();
+
+        //TRANS HOME TEXT
+        pointsBack.select("#pointsBubbLab").selectAll("text")
+                .data(newPointsData)
+                .transition()
+                .text(function (d) {
+                    if (d.winner === currTeam) {
+                        var y = d.winnerScore;
+                    }
+                    else {
+                        var y = d.loserScore;
+                    }
+                    return y;
+                })
+                .attr("x", function (d, i) {
+                    if (d.winner === currTeam) {
+                        var r = d.winnerScore;
+                    }
+                    else {
+                        var r = d.loserScore;
+                    }
+
+                    return pointsRoundScale(i) + pointsXShink-8;
+                })
+                .attr("y", function (d) {
+                    if (d.winner === currTeam) {
+                        return 100 + (height - pointsHeight / 2) + pointsYSchink;
+                    }
+                    return 200 + (height - pointsHeight / 2) + pointsYSchink;
+                })
+                .attr("fill", "white");
+
+        var texts = pointsBack.select("#pointsBubbLab").selectAll("text")
+                .data(newPointsData);
+        texts.exit().remove();
+
+        //CHANGE TITLE
+        pointsGroup.select("text")
+                .transition()
+                .attr("x", pointsRoundScale(pointsData.length /2))
+                .attr("y", (height - pointsHeight / 2))
+                .attr("font-size", fontSize)
+                .text(function(){
+                    return "Season "+currSeason+ " Wins and Losses";
+                });
+
+
+
+///CHANGE OPPO POINTS
+        pointsBackOppo.selectAll("circle")
+                .data(newPointsData)
+                .transition()
+                .attr("cx", function (d, i) {
+
+                    return pointsRoundScale(i) + pointsXShink;
+                })
+                .attr("cy", function (d) {
+                    if (d.winner !== currTeam) {
+                        return 100 + (height - pointsHeight / 2);
+                    }
+                    return 200 + (height - pointsHeight / 2);
+                })
+                .attr("r", function (d) {
+                    return 20;
+                })
+                .attr("class", function (d) {
+                    if (d.winner !== currTeam) {
+                        var name = d.winner;
+                    }
+                    else {
+                        var name = d.loser;
+                    }
+                    var name = stripSpaces(name, "Circle");
+
+                    return name;
+                })
+                .attr("opacity", function (d) {
+                    if (d.winner !== currTeam) {
+                        var o = 1;
+                    }
+                    else {
+                        var o = .9;
+                    }
+                    return o;
+                });
+        //REMOVE ESXTRAS
+        var circs = pointsBackOppo.selectAll("circle")
+                .data(newPointsData);
+        circs.exit().remove();
+
+        //TRANS TEXT
+        pointsBackOppo.select("#pointsBubbLabOppo").selectAll("text")
+                .data(newPointsData)
+                .transition()
+                .text(function (d) {
+                    if (d.winner !== currTeam) {
+                        var y = d.winnerScore;
+                    }
+                    else {
+                        var y = d.loserScore;
+                    }
+                    return y;
+                })
+                .attr("x", function (d, i) {
+                    if (d.winner !== currTeam) {
+                        var r = d.winnerScore;
+                    }
+                    else {
+                        var r = d.loserScore;
+                    }
+
+                    return pointsRoundScale(i) + pointsXShink-8;
+                })
+                .attr("y", function (d) {
+                    if (d.winner !== currTeam) {
+                        return 100 + (height - pointsHeight / 2) + pointsYSchink;
+                    }
+                    return 200 + (height - pointsHeight / 2) + pointsYSchink;
+                })
+                .attr("fill", "white")
+                .attr("text", function(d){
+                    if (d.winner !== currTeam) {
+                        var name = d.winner;
+                    }
+                    else {
+                        var name = d.loser;
+                    }
+                    return  name;
+                });
+        var texts = pointsBackOppo.select("#pointsBubbLabOppo").selectAll("text")
+                .data(newPointsData);
+        texts.exit().remove();
+    }
+});
+//End Main Function
+
+
+</script>
+<div id="roundSlider" class="wrapper">
+
+
+</div>
+
+</body>
+</html>

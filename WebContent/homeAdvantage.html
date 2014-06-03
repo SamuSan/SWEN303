@@ -137,6 +137,7 @@ var teamVenuesCountry = {
 
 };
 var currSelection = "Home";
+var currCountry = "All";
 var selectedPath = [];
 var teamNames = [
     "Adelaide Thunderbirds",
@@ -197,6 +198,25 @@ var svg = d3.select("body").append("svg")
         .append("g")
         .attr("transform", "translate(" + (margin.left+50) + "," + (margin.top+100) + ")");
 
+
+defs = svg.append("svg:defs");
+defs.append('svg:pattern')
+        .attr('id', 'anzImage')
+        .attr('patternUnits', 'objectBoundingBox')
+        .attr('width', 1)
+        .attr('height', 1)
+        .append('svg:image')
+        .attr('xlink:href', 'http://s29.postimg.org/jqe4mf2kn/anz_Championship_Crp_Trans.png')
+        .attr('x', -30)
+        .attr('y', -2)
+        .attr('width',199)
+        .attr('height', 198);
+svg.append("circle")
+        .attr("cx", 1000)
+        .attr("r", 70)
+        .attr("cy",-40)
+        .attr("opacity",.5)
+        .style("fill", "url(#anzImage");
 ///////////////////////////////////////////////////////////////////
 //Begin Main Function
 d3.json("data/allSeasonFixer.json", function (data) {
@@ -289,7 +309,7 @@ d3.json("data/allSeasonFixer.json", function (data) {
                 d.line = this;
                 return line(d.values);
             })
-            .attr("opacity", ".15")
+            .attr("opacity", ".1")
             .on("click", function () {
                 fadeOuts(this);
             })
@@ -345,6 +365,9 @@ d3.json("data/allSeasonFixer.json", function (data) {
     var legend = svg.selectAll(".legend")
             .data(varNames.slice())
             .enter().append("g")
+            .attr("id", function(d){
+                return d;
+            })
             .attr("class", "legend")
             .attr("transform", function (d, i) {
                 return "translate(150," + i * 20 + ")";
@@ -406,7 +429,7 @@ d3.json("data/allSeasonFixer.json", function (data) {
                 currSelection = "Home";
                 d3.select("#Away").style("fill","#d3d3d3" );
                 d3.select(this).style("fill","#6495ED" );
-                change("Home");
+                change();
 
             })
             .attr("id", "Home")
@@ -425,7 +448,7 @@ d3.json("data/allSeasonFixer.json", function (data) {
                 currSelection = "Away";
                 d3.select("#Home").style("fill","#d3d3d3" );
                 d3.select(this).style("fill","#6495ED" );
-                change("Away");
+                change();
             })
             .attr("id", "Away")
             .attr("x", width)
@@ -437,7 +460,6 @@ d3.json("data/allSeasonFixer.json", function (data) {
                 return "#d3d3d3";
             })
             .style("stroke", "grey");
-
 
     svg.append("text")
             .attr("x", width + 45)
@@ -466,6 +488,7 @@ d3.json("data/allSeasonFixer.json", function (data) {
             })
             .text("Away")
             .attr("pointer-events", "none");
+
     function ausVsNzPercentWinsAllTime() {
         var results = [];
 
@@ -510,7 +533,7 @@ d3.json("data/allSeasonFixer.json", function (data) {
         return results;
     }
 
-    function teamsWinsAllTime(arg) {
+    function teamsWinsAllTime() {
         var result;
         var results = [];
 
@@ -529,16 +552,19 @@ d3.json("data/allSeasonFixer.json", function (data) {
 
 
                 for (var e = 1; e <= 17; e++) {
-                    if (arg ===  "Home") {
-                        var teamGames = seas.filter(function (d) {
-                            return d.round === e && d.homeTeam == currTeam;
-                        });
-                        teamGamesTot += teamGames.length;
-                        var teamWins = teamGames.filter(function (d) {
-                            return d.winner == currTeam;
-                        });
-                        teamWinTot += teamWins.length;
-                    } else if(arg ===  "Away") {
+                    if (currSelection ===  "Home") {
+
+
+                            var teamGames = seas.filter(function (d) {
+                                return d.round === e && d.homeTeam == currTeam;
+                            });
+                            teamGamesTot += teamGames.length;
+                            var teamWins = teamGames.filter(function (d) {
+                                return d.winner == currTeam;
+                            });
+                            teamWinTot += teamWins.length;
+
+                    } else if(currSelection ===  "Away") {
 
                         var teamGames = seas.filter(function (d) {
                             return d.round === e && d.awayTeam == currTeam;
@@ -558,18 +584,34 @@ d3.json("data/allSeasonFixer.json", function (data) {
             var yearStr = "" + x;
 //            yearStr = yearStr.substr(2, yearStr.length);
 
+console.log(teamsRecord);
+            if (currCountry == "All") {
+                result = { "Adelaide Thunderbirds": teamsRecord[0],
+                    "Central Pulse": teamsRecord[1],
+                    "Canterbury Tactix": teamsRecord[2],
+                    "Melbourne Vixens": teamsRecord[3],
+                    "New South Wales Swifts": teamsRecord[4],
+                    "Northern Mystics": teamsRecord[5],
+                    "Queensland Firebirds": teamsRecord[6],
+                    "Southern Steel": teamsRecord[7],
+                    "Waikato Bay of Plenty Magic": teamsRecord[8],
+                    "West Coast Fever": teamsRecord[9],
+                    "SeasonRound": yearStr + ""};
+            } else if (currCountry == "NZ") {
 
-            result = { "Adelaide Thunderbirds": teamsRecord[0],
-                "Central Pulse": teamsRecord[1],
-                "Canterbury Tactix": teamsRecord[2],
-                "Melbourne Vixens": teamsRecord[3],
-                "New South Wales Swifts": teamsRecord[4],
-                "Northern Mystics": teamsRecord[5],
-                "Queensland Firebirds": teamsRecord[6],
-                "Southern Steel": teamsRecord[7],
-                "Waikato Bay of Plenty Magic": teamsRecord[8],
-                "West Coast Fever": teamsRecord[9],
-                "SeasonRound": yearStr + ""};
+                result = {
+                    "Central Pulse": teamsRecord[1],
+                    "Canterbury Tactix": teamsRecord[2],
+
+                    "Northern Mystics": teamsRecord[5],
+
+                    "Southern Steel": teamsRecord[7],
+                    "Waikato Bay of Plenty Magic": teamsRecord[8],
+                    "SeasonRound": yearStr + ""};
+
+
+
+            }
             results.push(result);
             result = null;
 
@@ -580,14 +622,15 @@ d3.json("data/allSeasonFixer.json", function (data) {
     }
 
     function fadeOuts(ob) {
-//    d3.selectAll("path.line").attr("opacity", 0);
+
         if (selectedPath[ob.id] != null) {
             d3.select(selectedPath).attr("opacity", ".2");
-//        selectedPath[ob.id]=null;
+
         }
         d3.select(ob).attr("opacity", "1");
+        console.log(ob.id)
         selectedPath[ob.id] = ob;
-//    console.log(selectedPath.id);
+
     }
 
     function clearFades() {
@@ -627,7 +670,7 @@ d3.json("data/allSeasonFixer.json", function (data) {
             placement: 'auto top',
             container: 'body',
             trigger: 'manual',
-            html: true,
+            html: true
         });
         $(this).popover('show')
     }
@@ -687,6 +730,7 @@ series.data(newseriesData);
                 .attr("cy", function (d) {
                     return y(d.value);
                 });
+
 
 
 

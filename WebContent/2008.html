@@ -30,7 +30,7 @@ var svg = d3.select("body").append("svg")
 			.attr("width", width)
 			.attr("height", height);
 
-function display(fileName){d3.json(file,function(data){
+function display(){d3.json("data/allSeasons.json",function(data){
 	console.log(data);
 var season = 1;
 	
@@ -72,7 +72,7 @@ var season = 1;
 		});
 		
 }
-display("data/2008AnzChamp.json");
+display();
 </script>
 <div >
 <button class="btn btn-info" type="submit">Button</button>

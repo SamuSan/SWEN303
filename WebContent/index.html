@@ -1,95 +1,489 @@
 <!DOCTYPE html>
 <html>
-<meta charset="utf-8"> 
+<meta charset="utf-8">
 <head>
 
-<link rel="stylesheet" href="styles/bootstrap/dist/css/bootstrap.css">
-<link rel="stylesheet" href="styles/main.css">
-
+    <link rel="stylesheet" href="styles/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/d3.slider.css">
 
 
 </head>
 
 <body>
-<script type="text/javascript" src="d3/d3.min.js"></script> 
-<script type="text/javascript" src="node_modules/topojson/topojson.min.js"></script>
-
-
-<div class = "mainDiv">
-	<table class="mainTable">
-       			<tr>
-       				<!-- <td class="spacerTD"></td> -->
-					<td>
-					<img src="images/anzChampionship.jpg" class = "titleIMG">
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<a href="placingsOverSeason.html"><img src="images/WestCoastFever.jpg"></a>
-					</td>
-					<td>
-						<a href="mapFrontPage.html"><img src="images/CentralPulse.jpg"></a>
-					</td>
-					<td>
-						<a href="teamOverView.html"><img src="images/WaikatoBayofPlentyMagic.jpg"></a>
-					</td>
-					<td>
-						<a href="steel.html"><img src="images/SouthernSteel.jpg"></a>
-					</td>
-					<td>
-						<a href="seasonScoring.html"><img src="images/AdelaideThunderbirds.jpg"></a>
-					</td>
-							
-				</tr>
-				<tr>
-					<td>
-						<a href="vixens.html"><img src="images/MelbourneVixens.jpg"></a>
-					</td>
-					<td>
-						<a href="mystics.html"><img src="images/NorthernMystics.jpg"></a>
-					</td>
-					<td>
-						<a href="swifts.html"><img src="images/NewSouthWalesSwifts.jpg"></a>
-					</td>
-					<td>
-						<a href="tactix.html"><img src="images/CanterburyTactix.jpg"></a>
-					</td>
-					<td>
-						<a href="firebirds.html"><img src="images/QueenslandFirebirds.jpg"></a>
-					</td>
-
-				</tr>
-				<tr class= "buttonTR">
-						<td class = "tdSeasons"><button class="btn btn-primaryClear btn-block" type="submit"></button></td>
-					<td class = "tdSeasons"><a href="mapFrontPage.html"><button class="btn btn-primary btn-block" type="submit">2008</button></a></td>
-					<td class = "tdSeasons"><a href="2009.html"><button class="btn btn-primary btn-block" type="submit">2009</button></a></td>
-					<td class = "tdSeasons"><a href="2010.html"><button class="btn btn-primary btn-block" type="submit">2010</button></a></td>
-
-
-				</tr>
-				<tr class= "buttonTR">
-					<td class = "tdSeasons"><button class="btn btn-primaryClear btn-block" type="submit"></button></td>
-					<td class = "tdSeasons"><a href="2011.html"><button class="btn btn-primary btn-block" type="submit">2011</button></a></td>
-					<td class = "tdSeasons"><a href="2012.html"><button class="btn btn-primary btn-block" type="submit">2012</button></a></td>
-					<td class = "tdSeasons"><a href=""><button class="btn btn-primary btn-block" type="submit">2013</button></a></td>
-
-
-	</table>						
-</div>
-
+<script type="text/javascript" src="d3/d3.min.js"></script>
+<script type="text/javascript" src="node_modules/topojson/topojson.js"></script>
+<script type="text/javascript" src="js/d3slider/d3.slider.js"></script>
+<script type="text/javascript" src="d3Functions.js"></script>
+<!-- <script type="text/javascript" src="d3Functions.js"></script> -->
+<!--<div id="imageDiv" ><img src="images/Screen%20Shot%202014-05-05%20at%2019.24.15.png"></div>-->
+<div id="svgDiv"></div>
 <script type="text/javascript">
+var teamColors = [
+    {
+        AdelaideThunderbirdsRect: [
+            {'fill1': '#FF1493' /* Pink */, 'fill2': '#FFFFF1'/* White */}
+        ]
 
-var svg = d3.select("body").append("svg");
+    },
+    {
+        CentralPulseRect: [
+            {
+                "fill1": "#FFFF00", /* Yellow */
+                "fill2": "#1560BD" /* Blue */
+            }
+        ]
+    }
+    ,
+    {                            /*CANTERBURY TACTIX*/
+        CanterburyTactixRect: [
+            {
+                "fill1": '#FF0000', /* Red */
+                "fill2": '#000000'/* Black */
+            }
+        ]
+    },
+    {                            /* MELB VIX*/
+        MelbourneVixensRect: [
+            {
+                "fill1": '#191970', /* Dark Blue */
+                "fill2": '#008080'/* Green */
+            }
+        ]
+    },
+    {                            /*NSW SWIFTS*/
+        NewSouthWalesSwiftsRect: [
+            {
+                "fill1": '#FF0000', /*Red*/
+                "fill2": '#6495ED'/*Light Blue*/
+            }
+        ]
+    },
+    {                            /*NORTHERN MYSTICS*/
+        NorthernMysticsRect: [
+            {
+                "fill1": '#0000FF', /* Royal Blue */
+                "fill2": '#FF0000'/* Red */
+            }
+        ]
+    },
+    {                            /*QUEENSLAND FIREBIRDS*/
+        QueenslandFirebirdsRect: [
+            {
+                "fill1": '#800080', /* Purple */
+                "fill2": '#FFA500'/* Gold */
+            }
+        ]
+    },
+    {                            /*SOUTHERN STEEL*/
+        SouthernSteelRect: [
+            {
+                "fill1": '#00B7EB', /* Light Blue*/
+                "fill2": '#000000'/*Black*/
+            }
+        ]
+    },
+    {                            /*WAIKATO BAY OF PLENTY MAGIC*/
+        WaikatoBayofPlentyMagicRect: [
+            {
+                "fill1": '#000000', /* Black */
+                "fill2": '#FF4500'/* Orange */
+            }
+        ]
+    },
+    {                            /*WESTCOST FEVER*/
+        WestCoastFeverRect: [
+            {
+                "fill1": '#000000', /* Black */
+                "fill2": '#32CD32'/* Bright Ugly Green*/
+            }
+        ]}
+];
+var teamNames = [
+    "Adelaide Thunderbirds",
+    "Central Pulse" ,
+    "Canterbury Tactix",
+    "Melbourne Vixens",
+    "New South Wales Swifts",
+    "Northern Mystics",
+    "Queensland Firebirds",
+    "Southern Steel",
+    "Waikato Bay of Plenty Magic",
+    "West Coast Fever"
+];
+
+var teamCoord = [
+    {"Team": "Adelaide Thunderbirds", "x": 569, "y": 532},
+    {"Team": "Central Pulse", "x": 1060, "y": 640} ,
+    {"Team": "Canterbury Tactix", "x": 1031, "y": 682},
+    {"Team": "Melbourne Vixens", "x": 656, "y": 582},
+    {"Team": "New South Wales Swifts", "x": 740, "y": 513},
+    {"Team": "Northern Mystics", "x": 1060, "y": 562},
+    {"Team": "Queensland Firebirds", "x": 764, "y": 412},
+    {"Team": "Southern Steel", "x": 974, "y": 738},
+    {"Team": "Waikato Bay of Plenty Magic", "x": 1066, "y": 578},
+    {"Team": "West Coast Fever", "x": 254, "y": 482}
+];
+
+var factor = 10000;
+var scale = 1000;
+var width = 1500;
+var height = 860;
+var rectHeight = 30;
+var rectWidth = 50;
+var padding = 400;
+var buffer = 30;
+var currRound = 1;
+var currSeason = 2008;
+
+var infoBoxHeight = 112;
+var infoBoxWidth = 150;
+var svg = d3.select("body")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+
+//var circleContainer = svg.append("g").attr('id', "teamCircs");
+//var mapContainer = svg.append("g").attr("id", "map");
+//var cityContainer = svg.append("g").attr("id", "cities");
+//var teamContainer = svg.append("g").attr("id", "teams");
+
+//var teamCircleContainer = svg.append("g");
+
+var yScale = d3.scale.linear()
+        .domain([0, 34])
+        .range([height - 50, 10]);
+var pointsAxis = d3.svg.axis()
+        .orient("left").ticks(34)
+        .scale(yScale);
+var mouseoverPop = function() {
+    var circle = d3.select(this);
+    circle.transition().duration(100)
+            .attr("r", 25 );
+}
+var mouseoverPiff = function() {
+// remember how d3 goes through EACH of the selected elements and uses your function for EACH element?
+// well, everytime the function is used for an element, it has a "secret" variable called 'this' which holds that element.
+// we use 'this' to increment the current element's radius by 10
+    var circle = d3.select(this);
+    circle.transition().duration(100)
+            .attr("r", 10 );
+}
+
+//Begin Main Function
+d3.json("data/allSeasons.json", function (data) {
+
+    defs = svg.append("svg:defs");
+    defs.append('svg:pattern')
+            .attr('id', 'mapImage')
+            .attr('patternUnits', 'userSpaceOnUse')
+            .attr('width', width)
+            .attr('height', height)
+            .append('svg:image')
+            .attr('xlink:href', 'http://s8.postimg.org/sndlbloat/aus_NZ.png')
+            .attr('x', 0)
+            .attr('y', 0)
+            .attr('width', width)
+            .attr('height', height);
+    defs.append('svg:pattern')
+            .attr('id', 'anzImage')
+            .attr('patternUnits', 'objectBoundingBox')
+            .attr('width', 1)
+            .attr('height', 1)
+            .append('svg:image')
+            .attr('xlink:href', 'http://s29.postimg.org/jqe4mf2kn/anz_Championship_Crp_Trans.png')
+            .attr('x', 0)
+            .attr('y', 0)
+            .attr('width',199)
+            .attr('height', 198);
+//ATB
+    defs.append('svg:pattern')
+            .attr('id', 'AdelaideThunderbirdsImage')
+            .attr('patternUnits', 'objectBoundingBox')
+            .attr('width', 1)
+            .attr('height', 1)
+            .append('svg:image')
+            .attr('xlink:href', 'http://s24.postimg.org/8hijhagm9/Adelaide_Thunderbirds.jpg')
+            .attr('x', 0)
+            .attr('y', 0)
+            .attr('width',150)
+            .attr('height', 112);
+//MV
+    defs.append('svg:pattern')
+            .attr('id', 'MelbourneVixensImage')
+            .attr('patternUnits', 'objectBoundingBox')
+            .attr('width', 1)
+            .attr('height', 1)
+            .append('svg:image')
+            .attr('xlink:href', 'http://s29.postimg.org/4ol3m3pib/Melbourne_Vixens.jpg')
+            .attr('x', 0)
+            .attr('y', 0)
+            .attr('width',150)
+            .attr('height', 112);
+
+//CT
+    defs.append('svg:pattern')
+            .attr('id', 'CanterburyTactixImage')
+            .attr('patternUnits', 'objectBoundingBox')
+            .attr('width', 1)
+            .attr('height', 1)
+            .append('svg:image')
+            .attr('xlink:href', 'http://s27.postimg.org/tdj257mof/Canterbury_Tactix.jpg')
+            .attr('x', 0)
+            .attr('y', 0)
+            .attr('width',150)
+            .attr('height', 112);
+
+    //CPU
+    defs.append('svg:pattern')
+            .attr('id', 'CentralPulseImage')
+            .attr('patternUnits', 'objectBoundingBox')
+            .attr('width', 1)
+            .attr('height', 1)
+            .append('svg:image')
+            .attr('xlink:href', 'http://s29.postimg.org/bnz5lgpgj/Central_Pulse.jpg')
+            .attr('x', 0)
+            .attr('y', 0)
+            .attr('width',150)
+            .attr('height', 112);
+
+    //NSW
+    defs.append('svg:pattern')
+            .attr('id', 'NewSouthWalesSwiftsImage')
+            .attr('patternUnits', 'objectBoundingBox')
+            .attr('width', 1)
+            .attr('height', 1)
+            .append('svg:image')
+            .attr('xlink:href', 'http://s27.postimg.org/z87ncxpjj/New_South_Wales_Swifts.jpg')
+            .attr('x', 0)
+            .attr('y', 0)
+            .attr('width',150)
+            .attr('height', 112);
+    //NMYS
+    defs.append('svg:pattern')
+            .attr('id', 'NorthernMysticsImage')
+            .attr('patternUnits', 'objectBoundingBox')
+            .attr('width', 1)
+            .attr('height', 1)
+            .append('svg:image')
+            .attr('xlink:href', 'http://s8.postimg.org/vdszjhltd/Northern_Mystics.jpg')
+            .attr('x', 0)
+            .attr('y', 0)
+            .attr('width',150)
+            .attr('height', 112);
+    //QFB
+    defs.append('svg:pattern')
+            .attr('id', 'QueenslandFirebirdsImage')
+            .attr('patternUnits', 'objectBoundingBox')
+            .attr('width', 1)
+            .attr('height', 1)
+            .append('svg:image')
+            .attr('xlink:href', 'http://s27.postimg.org/lc40esiof/Queensland_Firebirds.jpg')
+            .attr('x', 0)
+            .attr('y', 0)
+            .attr('width',150)
+            .attr('height', 112);
+    //SS
+    defs.append('svg:pattern')
+            .attr('id', 'SouthernSteelImage')
+            .attr('patternUnits', 'objectBoundingBox')
+            .attr('width', 1)
+            .attr('height', 1)
+            .append('svg:image')
+            .attr('xlink:href', 'http://s1.postimg.org/8witq83rf/Southern_Steel.jpg')
+            .attr('x', 0)
+            .attr('y', 0)
+            .attr('width',150)
+            .attr('height', 112);
+    //WBPM
+    defs.append('svg:pattern')
+            .attr('id', 'WaikatoBayofPlentyMagicImage')
+            .attr('patternUnits', 'objectBoundingBox')
+            .attr('width', 1)
+            .attr('height', 1)
+            .append('svg:image')
+            .attr('xlink:href', 'http://s15.postimg.org/cvcewf19z/Waikato_Bayof_Plenty_Magic.jpg')
+            .attr('x', 0)
+            .attr('y', 0)
+            .attr('width',150)
+            .attr('height', 112);
+    //WCF
+    defs.append('svg:pattern')
+            .attr('id', 'WestCoastFeverImage')
+            .attr('patternUnits', 'objectBoundingBox')
+            .attr('width', 1)
+            .attr('height', 1)
+            .append('svg:image')
+            .attr('xlink:href', 'http://s29.postimg.org/ru4ozl9er/West_Coast_Fever.jpg')
+            .attr('x', 0)
+            .attr('y', 0)
+            .attr('width',150)
+            .attr('height', 112);
+    svg.append("rect")
+            .on("click", function () {
+                infoBoxKill();
+//                var point = d3.mouse(this);
+//                console.log("x=" + point[0]);
+//                console.log("y= " + point[1]);
+            })
+            .attr("width", width)
+            .attr("height", height)
+            .attr("x", 0)
+            .attr("y", 0)
+            .style("fill", "url(#mapImage)");
+var butH = 50;
+var butW = 200;
+var butY = 330;
+    var butX = 910;
+    svg.append("a").attr("xlink:href","placingsOverSeason.html").append("circle")
+            .attr("cx", 1100)
+            .attr("r", 100)
+            .attr("cy", 180)
+            .style("fill", "url(#anzImage");
+
+    svg.append("a").attr("xlink:href", "homeAdvantage.html").append("rect")
+            .attr("id", "winComp")
+            .on("mouseover", function(){
+                d3.select("#seasRound").style("fill","grey" );
+                d3.select(this).style("fill","#6495ED" );
+            })
+            .on("mouseout", function(){
+
+                d3.select(this).style("fill","grey" );
+            })
+            .attr("x",butX  )
+            .attr("y", butY)
+            .attr("width", butW)
+            .attr("height", butH)
+            .attr("fill", "grey")
+            .attr("stroke", "black")
+            .attr("stroke-width", "3px")
+
+    svg.append("a").attr("xlink:href", "placingsOverSeason.html").append("rect")
+            .attr("id", "seasRound")
+            .on("mouseover", function(){
+                d3.select("#winComp").style("fill","grey" );
+                d3.select(this).style("fill","#6495ED" );
+            })
+            .on("mouseout", function(){
+
+                d3.select(this).style("fill","grey" );
+            })
+            .attr("x",butX+ butW)
+            .attr("y", butY)
+            .attr("width", butW)
+            .attr("height", butH)
+            .attr("fill", "grey")
+            .attr("stroke", "black")
+            .attr("stroke-width", "3px")
+
+    svg.append("text")
+            .attr("pointer-events", "none")
+            .attr("x",butX+5  )
+            .attr("y", butY+ (27))
+            .attr("fill", "black")
+            .text("Team Win % Comparison")
+
+
+    svg.append("text")
+            .attr("pointer-events", "none")
+            .attr("x",butX+ butW+25)
+            .attr("y", butY + (20))
+            .attr("fill", "black")
+            .text("Season vs Round")
+    svg.append("text")
+            .attr("pointer-events", "none")
+            .attr("x",butX+ butW+25)
+            .attr("y", butY + (40))
+            .attr("fill", "black")
+            .text("Placing Overview")
+
+    var teamsGroup = svg.append("g");
+    var teams = teamsGroup.selectAll("circle")
+            .data(teamCoord)
+            .enter()
+            .append("circle")
+            .attr("id", function(d){
+                return d.Team;
+            })
+            .on("click",function(d){
+                var obj = d3.select(this);
+
+                infoBoxKill();
+                infoBoxDraw(obj);
+
+            } )
+            .on("mouseover",function(d){
+                mouseoverPop;
+            } )
+            .attr("cx", function (d, i) {
+                if (d.Team === "Northern Mystics") {
+                    return d.x ;
+                }
+                else if (d.Team === "Waikato Bay of Plenty Magic") {
+                    return d.x ;
+                }
+                return d.x;
+
+            })
+            .attr("cy", function (d, i) {
+                if (d.Team === "Northern Mystics") {
+                    return d.y ;
+                }
+                else if (d.Team === "Waikato Bay of Plenty Magic") {
+                    return d.y ;
+                }
+                return d.y;
+            })
+            .attr("r", 15)
+            .attr("class", function (d) {
+                var name = stripSpaces(d.Team, "Circle");
+
+                return name;
+            });
+
+
+    function infoBoxDraw(x){
+console.log(x);
+var imgUrl = stripSpaces(x[0][0].id, "Image");
+        var overViewLink = stripSpaces(x[0][0].id, "teamOverView.html");
+        console.log(imgUrl);
+        teamsGroup.append("a").attr("xlink:href", overViewLink).append("rect")
+                .on("click", function(){
+                    console.log("CLICKED PIC")
+                })
+                .transition()
+                .duration(100)
+                .attr("id", "infoBox")
+
+
+                .attr("width", infoBoxWidth)
+                .attr("height", infoBoxHeight)
+                .attr("x", x[0][0].cx.baseVal.value)
+                .attr("y", (x[0][0].cy.baseVal.value)-infoBoxHeight)
+                .attr("opacity",1)
+                .style("fill","url(#"+imgUrl+")");
+
+
+    }
+    function infoBoxKill(){
+
+        teamsGroup.selectAll("#infoBox")
+                .transition()
+                .attr("width", 0)
+                .attr("height", 0)
+                .duration(100)
+                .remove();
+
+
+    }
+
+});
+//End Main Function
+
+
 </script>
-
-
-
-
-
-
-
-
-
 
 
 </body>
