@@ -7,9 +7,9 @@
     <link rel="stylesheet" href="styles/main.css">
     <link rel="stylesheet" href="styles/d3.slider.css">
 
-<!-- comment -->
-</head>
 
+</head>
+<!-- comment -->
 <body>
 <script type="text/javascript" src="d3/d3.min.js"></script>
 <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
@@ -126,9 +126,8 @@ var teamNames = [
     "Waikato Bay of Plenty Magic",
     "West Coast Fever"
 ];
-document.getElementById("teamSelector").selectedIndex=3;
 function getTitle() {
-    document.getElementById("titleHeader").innerHTML = teamNames[6];
+    document.getElementById("titleHeader").innerHTML = teamNames[0];
 }
 getTitle();
 
@@ -198,6 +197,7 @@ var pointsAxis = d3.svg.axis()
 var colorScale = d3.scale.ordinal()
         .domain(0, 1)
         .range(["#000000", "#32CD32"]);
+
 
 //Begin Main Function
 d3.json("data/allSeasons.json", function (data) {
@@ -327,7 +327,7 @@ d3.json("data/allSeasons.json", function (data) {
 
 // BEGIN STREAKS OF WINS
 
-    var streakScaleVert = d3.scale.linear().domain([0, 15]).range([0, (streakHeight-15)]);
+    var streakScaleVert = d3.scale.linear().domain([0, 16]).range([0, (streakHeight - 10)]);
     var streakAxisScaleVert = d3.scale.linear().domain([16, 0]).range([0, (streakHeight)]);
     var streakScaleHor = d3.scale.linear().domain([0, 5]).range([0, streakWidth]);
     var streakCont = d3.select("svg")
@@ -344,12 +344,12 @@ d3.json("data/allSeasons.json", function (data) {
             .attr("y", streakY)
             .attr("class", "placingsSeason");
     streakBack.append("text")
-            .attr("x", streakX + (streakWidth / 3))
+            .attr("x", streakX + (streakWidth / 5))
             .attr("y", streakY + 17)
-            .attr("font-size", "15px")
+            .attr("font-size", "18px")
             .text("Season Winning Streaks");
 
-    var streakAxis = d3.svg.axis().ticks([16]).tickValues([ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]).orient("left").scale(streakAxisScaleVert);
+    var streakAxis = d3.svg.axis().ticks([16]).tickValues([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]).orient("left").scale(streakAxisScaleVert);
     streakBack.append("g")
             .attr("transform", "translate(" + streakX + ",-10 )")
             .call(streakAxis);
@@ -402,7 +402,7 @@ d3.json("data/allSeasons.json", function (data) {
             .data(streakData)
             .enter()
             .append("text")
-            .attr("pointer-events","none")
+            .attr("pointer-events", "none")
             .attr("x", function (d, i) {
                 return streakScaleHor(i) + streakX + streakXSchink + 5;
             })
@@ -820,6 +820,14 @@ d3.json("data/allSeasons.json", function (data) {
             })
 
             for (var e = 0; e < season.length; e++) {
+                if (seasYear === 2011) {
+                    console.log("///////////////")
+                    console.log(seasYear);
+                    console.log(currTeam);
+                    console.log(season.length);
+                    console.log(numWins);
+                    console.log(maxStreak);
+                }
                 if (season[e].winner === currTeam) {
                     var streak = true;
                     var j = e + 1
